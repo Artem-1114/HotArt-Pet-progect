@@ -5,6 +5,7 @@ import Home from "./pages/Home/Home";
 import Contacts from "./pages/Home/Contacts";
 import About from "./pages/Home/About";
 import Categories from "./pages/Home/Categories";
+import CategoryPage from "./pages/Home/CategoryPage"; 
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/about" element={<About />} />
           <Route path="/categories" element={<Categories />} />
-          {/* Можна додати інші маршрути */}
+          <Route path="/category/:id" element={<CategoryPage />} />
         </Routes>
       </main>
       <Footer />

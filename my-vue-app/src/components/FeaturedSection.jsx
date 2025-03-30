@@ -15,28 +15,28 @@ const FeaturedSection = () => {
                             id: 1,
                             name: "iPhone 15 Pro",
                             price: "42 999 грн",
-                            image: "https://hotline.ua/img/tx/320/3205370945.jpg",
+                            image: "FeaturedSection_15_Pro.jpg",
                             store: "Rozetka"
                         },
                         {
                             id: 2,
                             name: "Samsung Galaxy S23 Ultra",
                             price: "47 999 грн",
-                            image: "https://hotline.ua/img/tx/320/3205337955.jpg",
+                            image: "FeaturedSection_S23_Ultra.jpg",
                             store: "Comfy"
                         },
                         {
                             id: 3,
                             name: "Xiaomi 13 Pro",
                             price: "32 999 грн",
-                            image: "https://hotline.ua/img/tx/320/3205370955.jpg",
+                            image: "FeaturedSection_Xiami_13_Pro.jpg",
                             store: "Allo"
                         },
                         {
                             id: 4,
                             name: "Google Pixel 8 Pro",
                             price: "38 999 грн",
-                            image: "https://hotline.ua/img/tx/320/3205370965.jpg",
+                            image: "FeaturedSection_Google_pixel.jpg",
                             store: "Foxtrot"
                         }
                     ]);
