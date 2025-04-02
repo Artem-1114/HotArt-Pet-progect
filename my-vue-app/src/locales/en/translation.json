@@ -1,0 +1,168 @@
+{
+    "footer": {
+        "menu": "Menu",
+        "information": "Information",
+        "contacts": "Contacts",
+        "language": "Language",
+        "social": "Follow us",
+        "copyright": "© {{year}} Your Company. All rights reserved."
+    },
+    "menu": {
+        "home": "Home",
+        "categories": "Categories",
+        "about": "About us",
+        "contacts": "Contacts"
+    },
+    "legal": {
+        "terms": "Terms of Service",
+        "privacy": "Privacy Policy"
+    },
+    "contacts": {
+        "phone": "Phone",
+        "email": "Email",
+        "writeUs": "Write us"
+    },
+    "userMenu": {
+        "profile": "Profile",
+        "wishlist": "Wishlist",
+        "cart": "Shopping Cart"
+    },
+    "slider": {
+        "iphone": {
+            "title": "iPhone 15 Pro (Rozetka)",
+            "price": "42 999 UAH"
+        },
+        "samsung": {
+            "title": "Samsung Galaxy S23 Ultra (Comfy)",
+            "price": "47 999 UAH"
+        },
+        "xiaomi": {
+            "title": "Xiaomi 13 Pro (Allo)",
+            "price": "32 999 UAH"
+        },
+        "google": {
+            "title": "Google Pixel 8 Pro (Foxtrot)",
+            "price": "38 999 UAH"
+        },
+        "shopButton": "Go to store"
+    },
+    "search": {
+        "placeholder": "Search products...",
+        "resultsTitle": "Search results",
+        "fromPrice": "From"
+    },
+    "common": {
+        "currency": "UAH"
+    },
+    "priceComparison": {
+       "title": "Price comparison for {{productName}}",
+        "store": "Store",
+        "price": "Price",
+        "link": "Link",
+        "goToStore": "Go to store"
+    },
+    "common": {
+        "close": "Close",
+        "currency": "UAH"
+    },
+    "navigation": {
+        "categories": "Categories",
+        "sales": "Sales",
+        "stores": "Stores"
+    },
+    "feedback": {
+        "title": "Contact Us",
+        "form": {
+            "name": "Your name",
+            "email": "Your email",
+            "message": "Your message",
+            "submit": "Submit"
+        },
+        "validation": {
+            "requiredFields": "Please fill in all fields.",
+            "invalidEmail": "Please enter a valid email address."
+        },
+        "successMessage": "Message sent successfully!"
+    },
+    "common": {
+        "close": "Close"
+    },
+    "featuredSection": {
+        "title": "Featured Deals",
+        "loading": "Loading products...",
+        "compareButton": "Compare prices"
+    },
+    "common": {
+        "currency": "UAH"
+    },
+    "contactInfo": {
+        "title": "Contacts",
+        "phone": "Phone"
+    },
+    "auth": {
+        "login": "Login",
+        "register": "Register",
+        "noAccount": "Don't have an account?",
+        "haveAccount": "Already have an account?",
+        "form": {
+            "email": "Email",
+            "password": "Password"
+        },
+        "validation": {
+            "requiredFields": "Please fill in all fields"
+        },
+        "success": {
+            "login": "Login successful!",
+            "registration": "Registration successful!"
+        }
+    },
+    "common": {
+        "close": "Close"
+    },
+    "categories": {
+        "title": "Product Categories",
+        "phones": "Smartphones",
+        "tablets": "Tablets",
+        "washingMachines": "Washing Machines",
+        "ovens": "Ovens",
+        "laptops": "Laptops",
+        "tvs": "TVs",
+        "view": "View"
+    },
+    "categories": {
+        "phones": "Smartphones",
+        "tablets": "Tablets",
+        "washingMachines": "Washing Machines",
+        "ovens": "Ovens",
+        "laptops": "Laptops",
+        "tvs": "TVs",
+        "default": "Category"
+    },
+    "product": {
+        "fromPrice": "From",
+        "noPrice": "Price not specified",
+        "compare": "Compare",
+        "noProducts": "No products match your criteria"
+    },
+    "filters": {
+        "brands": "Filter by brands",
+        "toggleBrand": "Filter by brand",
+        "sort": "Sort by",
+        "sortBy": "Sort by"
+    },
+    "sort": {
+        "default": "Default",
+        "priceAsc": "Price: Low to High",
+        "priceDesc": "Price: High to Low",
+        "brand": "Brand (A-Z)"
+    },
+    "pagination": {
+        "previous": "Previous",
+        "next": "Next",
+        "page": "Page"
+    },
+    "common": {
+        "loading": "Loading...",
+        "currency": "UAH"
+    }
+}

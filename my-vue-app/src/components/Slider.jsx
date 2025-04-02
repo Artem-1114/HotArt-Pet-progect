@@ -1,36 +1,42 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import '../style/Slider.css';
+import Logo_rozetka from "../assets/STORE_LOGOS/rozetka-logo.png";
+import comfy_logo from "../assets/STORE_LOGOS/comfy-logo.png";
+import allo_logo from "../assets/STORE_LOGOS/allo_logo.png";
+import Foxtrot_logo from "../assets/STORE_LOGOS/Foxtrot_logo.png";
 
 const Slider = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
+    const { t } = useTranslation();
 
     const slides = [
         {
-            title: "iPhone 15 Pro (Rozetka)",
+            title: t('slider.iphone.title'),
             image: "Slider_15_Pro_Max.jpg",
-            price: "42 999 грн",
-            storeLogo: "https://xl-static.rozetka.com.ua/assets/img/design/logo_n.svg",
+            price: t('slider.iphone.price'),
+            storeLogo: Logo_rozetka,
             storeUrl: "https://rozetka.com.ua"
         },
         {
-            title: "Samsung Galaxy S23 Ultra (Comfy)",
+            title: t('slider.samsung.title'),
             image: "Slider_Samsung_s23_ultra.jpg",
-            price: "47 999 грн",
-            storeLogo: "https://comfy.ua/upload/static/images/logo.png",
+            price: t('slider.samsung.price'),
+            storeLogo: comfy_logo,
             storeUrl: "https://comfy.ua"
         },
         {
-            title: "Xiaomi 13 Pro (Allo)",
+            title: t('slider.xiaomi.title'),
             image: "Slider_Xiomi_13_pro.jpg",
-            price: "32 999 грн",
-            storeLogo: "https://allo.ua/static/version2/Allo.svg",
+            price: t('slider.xiaomi.price'),
+            storeLogo: allo_logo,
             storeUrl: "https://allo.ua"
         },
         {
-            title: "Google Pixel 8 Pro (Foxtrot)",
+            title: t('slider.google.title'),
             image: "Slider_Google_pixel.jpg",
-            price: "38 999 грн",
-            storeLogo: "https://www.foxtrot.com.ua/upload/medialibrary/af1/af17d16f6c3e5d0f5b8e0e3a2e8b3b3e.svg",
+            price: t('slider.google.price'),
+            storeLogo: Foxtrot_logo,
             storeUrl: "https://foxtrot.com.ua"
         }
     ];
@@ -41,7 +47,7 @@ const Slider = () => {
         }, 5000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [slides.length]);
 
     const goToPrev = () => {
         setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
@@ -63,7 +69,7 @@ const Slider = () => {
                         alt={slide.title}
                         className="product-image"
                         onError={(e) => {
-                            // e.target.src = 'https://via.placeholder.com/800x400?text=Зображення+не+знайдено';
+                            e.target.src = 'https://via.placeholder.com/800x400?text=Image+Not+Found';
                         }}
                     />
                     <div className="slide-content">
@@ -73,7 +79,7 @@ const Slider = () => {
                                 alt={slide.storeUrl}
                                 className="store-logo"
                                 onError={(e) => {
-                                    // e.target.src = 'https://via.placeholder.com/100x30?text=Магазин';
+                                    e.target.src = 'https://via.placeholder.com/100x30?text=Store';
                                 }}
                             />
                         </div>
@@ -85,7 +91,7 @@ const Slider = () => {
                             rel="noopener noreferrer"
                             className="shop-now"
                         >
-                            Перейти до магазину
+                            {t('slider.shopButton')}
                         </a>
                     </div>
                 </div>

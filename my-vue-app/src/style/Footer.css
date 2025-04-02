@@ -285,3 +285,124 @@
         font-size: 24px;
     }
 }
+.language-switcher {
+    margin-top: 15px;
+}
+
+.language-toggle {
+    position: relative;
+    display: inline-block;
+}
+
+.language-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.language-toggle label {
+    display: block;
+    width: 80px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border-radius: 50px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+}
+
+.language-toggle label:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.language-toggle label:active {
+    transform: scale(0.95);
+}
+
+.language-toggle label span {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 600;
+    font-size: 14px;
+    color: #fff;
+    transition: all 0.4s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.language-toggle label .uk {
+    left: 12px;
+    opacity: 1;
+}
+
+.language-toggle label .en {
+    right: 12px;
+    opacity: 0.7;
+}
+
+.language-toggle input:checked+label .uk {
+    opacity: 0.7;
+    transform: translateY(-50%) scale(0.9);
+}
+
+.language-toggle input:checked+label .en {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.language-toggle .toggle-handle {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(135deg, #ff8c00, #ff6600);
+    border-radius: 50%;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    content: attr(data-lang);
+}
+
+.language-toggle input:checked+label .toggle-handle {
+    left: calc(100% - 33px);
+    background: linear-gradient(135deg, #6a0dad, #4b0082);
+}
+
+.language-toggle input:checked+label .toggle-handle::after {
+    content: 'EN';
+}
+
+.language-toggle input:not(:checked)+label .toggle-handle::after {
+    content: 'UA';
+}
+
+/* Анімація при перемиканні */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.language-toggle input:checked+label .toggle-handle,
+.language-toggle input:not(:checked)+label .toggle-handle {
+    animation: pulse 0.4s ease;
+}
