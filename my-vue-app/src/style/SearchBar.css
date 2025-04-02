@@ -1,0 +1,120 @@
+.header__search {
+    position: relative;
+    width: 300px;
+    display: flex;
+    align-items: center;
+}
+
+.header__search input {
+    width: 100%;
+    padding: 10px 35px 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.header__search input:focus {
+    border-color: #ff6600;
+    box-shadow: 0 0 5px rgba(255, 102, 0, 0.2);
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px;
+    color: #777;
+    cursor: pointer;
+}
+
+.clear-icon {
+    color: #ff6600;
+}
+
+.clear-icon:hover {
+    color: #e55c00;
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    margin-top: 5px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.search-results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.search-results-header h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.search-results-header button {
+    background: none;
+    border: none;
+    color: #777;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.search-results-list {
+    padding: 10px;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.search-result-item:hover {
+    background-color: #f9f9f9;
+}
+
+.search-result-image {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    margin-right: 15px;
+    border-radius: 4px;
+}
+
+.search-result-info {
+    flex: 1;
+}
+
+.search-result-info h5 {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.search-result-brand {
+    margin: 0;
+    font-size: 12px;
+    color: #777;
+}
+
+.search-result-price {
+    margin: 5px 0 0 0;
+    font-size: 14px;
+    color: #ff6600;
+    font-weight: bold;
+}

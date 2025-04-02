@@ -1,0 +1,168 @@
+{
+    "footer": {
+        "menu": "Меню",
+        "information": "Інформація",
+        "contacts": "Контакти",
+        "language": "Мова",
+        "social": "Ми в соцмережах",
+        "copyright": "© {{year}} Ваша компанія. Всі права захищені."
+    },
+    "menu": {
+        "home": "Головна",
+        "categories": "Категорії",
+        "about": "Про нас",
+        "contacts": "Контакти"
+    },
+    "legal": {
+        "terms": "Умови користування",
+        "privacy": "Політика конфіденційності"
+    },
+    "contacts": {
+        "phone": "Телефон",
+        "email": "Email",
+        "writeUs": "Написати нам"
+    },
+    "userMenu": {
+        "profile": "Профіль",
+        "wishlist": "Список бажань",
+        "cart": "Кошик"
+    },
+    "slider": {
+        "iphone": {
+            "title": "iPhone 15 Pro (Rozetka)",
+            "price": "42 999 грн"
+        },
+        "samsung": {
+            "title": "Samsung Galaxy S23 Ultra (Comfy)",
+            "price": "47 999 грн"
+        },
+        "xiaomi": {
+            "title": "Xiaomi 13 Pro (Allo)",
+            "price": "32 999 грн"
+        },
+        "google": {
+            "title": "Google Pixel 8 Pro (Foxtrot)",
+            "price": "38 999 грн"
+        },
+        "shopButton": "Перейти до магазину"
+    },
+    "search": {
+        "placeholder": "Пошук товарів...",
+        "resultsTitle": "Результати пошуку",
+        "fromPrice": "Від"
+    },
+    "common": {
+        "currency": "грн"
+    },
+    "priceComparison": {
+        "title": "Порівняння цін для {{productName}}",
+        "store": "Магазин",
+        "price": "Ціна",
+        "link": "Посилання",
+        "goToStore": "Перейти"
+    },
+    "common": {
+        "close": "Закрити",
+        "currency": "грн"
+    },
+    "navigation": {
+        "categories": "Категорії",
+        "sales": "Акції",
+        "stores": "Магазини"
+    },
+    "feedback": {
+        "title": "Напишіть нам",
+        "form": {
+            "name": "Ваше ім'я",
+            "email": "Ваш email",
+            "message": "Ваше повідомлення",
+            "submit": "Відправити"
+        },
+        "validation": {
+            "requiredFields": "Будь ласка, заповніть усі поля.",
+            "invalidEmail": "Будь ласка, введіть коректний email."
+        },
+        "successMessage": "Повідомлення успішно надіслано!"
+    },
+    "common": {
+        "close": "Закрити"
+    },
+   "featuredSection": {
+    "title": "Акційні пропозиції",
+    "loading": "Завантаження товарів...",
+    "compareButton": "Порівняти ціни"
+},
+"common": {
+    "currency": "грн"
+},
+"contactInfo": {
+    "title": "Контакти",
+    "phone": "Телефон"
+},
+"auth": {
+    "login": "Увійти",
+    "register": "Зареєструватися",
+    "noAccount": "Немає акаунта?",
+    "haveAccount": "Вже є акаунт?",
+    "form": {
+        "email": "Email",
+        "password": "Пароль"
+    },
+    "validation": {
+        "requiredFields": "Будь ласка, заповніть всі поля"
+    },
+    "success": {
+        "login": "Успішний вхід!",
+        "registration": "Реєстрація успішна!"
+    }
+},
+"common": {
+    "close": "Закрити"
+},
+"categories": {
+    "title": "Категорії товарів",
+    "phones": "Смартфони",
+    "tablets": "Планшети",
+    "washingMachines": "Пральні машини",
+    "ovens": "Духові шафи",
+    "laptops": "Ноутбуки",
+    "tvs": "Телевізори",
+    "view": "Переглянути"
+},
+"categories": {
+    "phones": "Смартфони",
+    "tablets": "Планшети",
+    "washingMachines": "Пральні машини",
+    "ovens": "Духові шафи",
+    "laptops": "Ноутбуки",
+    "tvs": "Телевізори",
+    "default": "Категорія"
+},
+"product": {
+    "fromPrice": "Від",
+    "noPrice": "Ціна не вказана",
+    "compare": "Порівняти",
+    "noProducts": "Товари відсутні за обраними критеріями"
+},
+"filters": {
+    "brands": "Фільтр по брендам",
+    "toggleBrand": "Фільтрувати за брендом",
+    "sort": "Сортування",
+    "sortBy": "Сортувати за"
+},
+"sort": {
+    "default": "За замовчуванням",
+    "priceAsc": "Від дешевих до дорогих",
+    "priceDesc": "Від дорогих до дешевих",
+    "brand": "За виробником (А-Я)"
+},
+"pagination": {
+    "previous": "Попередня",
+    "next": "Наступна",
+    "page": "Сторінка"
+},
+"common": {
+    "loading": "Завантаження...",
+    "currency": "грн"
+}
+}

@@ -57,14 +57,20 @@
 
 .store-info {
     margin-bottom: 15px;
+    position: relative;
 }
 
 .store-logo {
     max-height: 30px;
     max-width: 150px;
     object-fit: contain;
-    filter: brightness(0) invert(1);
+    /* filter: brightness(0) invert(1); */
     transition: transform 0.3s ease;
+    background: white;
+    position: absolute;
+    top: -60px;
+    left: -10px;
+    
 }
 
 .store-logo:hover {

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from 'react-i18next';
 import "../style/FeedbackModal.css";
 
 const FeedbackModal = ({ isOpen, onClose }) => {
@@ -6,23 +7,24 @@ const FeedbackModal = ({ isOpen, onClose }) => {
     const [email, setEmail] = useState("");
     const [message, setMessage] = useState("");
     const [status, setStatus] = useState(null);
+    const { t } = useTranslation();
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Валідація
+        // Validation
         if (!name || !email || !message) {
-            setStatus("Будь ласка, заповніть усі поля.");
+            setStatus(t('feedback.validation.requiredFields'));
             return;
         }
 
         if (!/\S+@\S+\.\S+/.test(email)) {
-            setStatus("Будь ласка, введіть коректний email.");
+            setStatus(t('feedback.validation.invalidEmail'));
             return;
         }
 
         setTimeout(() => {
-            setStatus("Повідомлення успішно надіслано!");
+            setStatus(t('feedback.successMessage'));
             setName("");
             setEmail("");
             setMessage("");
@@ -32,29 +34,33 @@ const FeedbackModal = ({ isOpen, onClose }) => {
     return (
         <div className={`modal-overlay ${isOpen ? "active" : ""}`}>
             <div className="modal">
-                <h2>Напишіть нам</h2>
+                <h2>{t('feedback.title')}</h2>
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
-                        placeholder="Ваше ім’я"
+                        placeholder={t('feedback.form.name')}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
                     <input
                         type="email"
-                        placeholder="Ваш email"
+                        placeholder={t('feedback.form.email')}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
                     <textarea
-                        placeholder="Ваше повідомлення"
+                        placeholder={t('feedback.form.message')}
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                     />
-                    <button type="submit">Відправити</button>
+                    <button type="submit">{t('feedback.form.submit')}</button>
                 </form>
                 {status && <p className="modal-status">{status}</p>}
-                <button className="modal-close" onClick={onClose}>
+                <button
+                    className="modal-close"
+                    onClick={onClose}
+                    aria-label={t('common.close')}
+                >
                     ✖
                 </button>
             </div>
