@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { FiSearch, FiX } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
-import categoryData from '../components/ArrayOfCategories.jsx';
+import categoryData from '../data/ArrayOfCategories.jsx';
 import '../style/SearchBar.css';
 
 const SearchBar = () => {
@@ -11,12 +11,10 @@ const SearchBar = () => {
     const searchRef = useRef(null);
     const { t } = useTranslation();
 
-    // Search term handler
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
 
-    // Product search
     useEffect(() => {
         if (searchTerm.trim() === '') {
             setSearchResults([]);
@@ -26,7 +24,7 @@ const SearchBar = () => {
         const results = [];
         const lowerCaseSearchTerm = searchTerm.toLowerCase();
 
-        // Search across all categories
+
         Object.values(categoryData).forEach(category => {
             category.forEach(product => {
                 if (
@@ -38,11 +36,10 @@ const SearchBar = () => {
             });
         });
 
-        setSearchResults(results.slice(0, 8)); // Limit results
+        setSearchResults(results.slice(0, 8)); 
         setIsSearchOpen(results.length > 0);
     }, [searchTerm]);
 
-    // Close search when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -56,7 +53,6 @@ const SearchBar = () => {
         };
     }, []);
 
-    // Clear search
     const clearSearch = () => {
         setSearchTerm('');
         setSearchResults([]);
