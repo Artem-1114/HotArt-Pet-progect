@@ -7,6 +7,7 @@
     box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
     position: relative;
     z-index: 1000;
+    margin-top: 0;
 }
 
 .header__logo {
@@ -289,4 +290,47 @@
     .header__user-menu {
         gap: 20px;
     }
+}
+.user-icon-container {
+    position: relative;
+    display: inline-block;
+}
+
+.user-dropdown {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    min-width: 160px;
+    padding: 8px 0;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #333;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #f5f5f5;
+}
+
+.auth-badge {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 10px;
+    height: 10px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    border: 2px solid white;
 }

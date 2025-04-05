@@ -5,6 +5,10 @@ import rozetkaLogo from '../assets/STORE_LOGOS/rozetka-logo.png';
 import comfyLogo from '../assets/STORE_LOGOS/comfy-logo.png';
 import alloLogo from '../assets/STORE_LOGOS/allo_logo.png';
 import foxtrotLogo from '../assets/STORE_LOGOS/Foxtrot_logo.png';
+import iphone_15_pro_natural_titanium_pdp_image_position from "../assets/Smartfone/iPhone_15_pro.jpg"
+import FeaturedSection_Google_pixel from "../assets/Actions/FeaturedSection_Google_pixel.jpg"
+import FeaturedSection_S23_Ultra from "../assets/Actions/FeaturedSection_S23_Ultra.jpg"
+import FeaturedSection_Xiami_13_Pro from "../assets/Actions/FeaturedSection_Xiami_13_Pro.jpg"
 import '../style/FeaturedSection.css';
 
 const FeaturedSection = () => {
@@ -30,7 +34,7 @@ const FeaturedSection = () => {
                             id: 1,
                             name: "iPhone 15 Pro",
                             price: 42999,
-                            image: "FeaturedSection_15_Pro.jpg",
+                            image: iphone_15_pro_natural_titanium_pdp_image_position,
                             store: "Rozetka",
                             variants: [
                                 { store: "Rozetka", price: 42999, url: "https://rozetka.com.ua/iphone-15-pro" },
@@ -43,7 +47,7 @@ const FeaturedSection = () => {
                             id: 2,
                             name: "Samsung Galaxy S23 Ultra",
                             price: 47999,
-                            image: "FeaturedSection_S23_Ultra.jpg",
+                            image: FeaturedSection_S23_Ultra,
                             store: "Comfy",
                             variants: [
                                 { store: "Rozetka", price: 46999, url: "https://rozetka.com.ua/s23-ultra" },
@@ -56,7 +60,7 @@ const FeaturedSection = () => {
                             id: 3,
                             name: "Xiaomi 13 Pro",
                             price: 21999,
-                            image: "FeaturedSection_Xiami_13_Pro.jpg",
+                            image: FeaturedSection_Xiami_13_Pro,
                             store: "Rozetka",
                             variants: [
                                 { store: "Rozetka", price: 21999, url: "https://rozetka.com.ua/xiaomi-mi-11" },
@@ -69,7 +73,7 @@ const FeaturedSection = () => {
                             id: 4,
                             name: "Google Pixel 9 Pro",
                             price: 31566,
-                            image: "FeaturedSection_Google_pixel.jpg",
+                            image: FeaturedSection_Google_pixel,
                             store: "Rozetka",
                             variants: [
                                 { store: "Rozetka", price: 31566, url: "https://rozetka.com.ua/google-pixel-7" },

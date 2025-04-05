@@ -99,27 +99,10 @@
         "title": "Contacts",
         "phone": "Phone"
     },
-    "auth": {
-        "login": "Login",
-        "register": "Register",
-        "noAccount": "Don't have an account?",
-        "haveAccount": "Already have an account?",
-        "form": {
-            "email": "Email",
-            "password": "Password"
-        },
-        "validation": {
-            "requiredFields": "Please fill in all fields"
-        },
-        "success": {
-            "login": "Login successful!",
-            "registration": "Registration successful!"
-        }
-    },
     "common": {
         "close": "Close"
     },
-    "categories": {
+    "categoriess": {
         "title": "Product Categories",
         "phones": "Smartphones",
         "tablets": "Tablets",
@@ -164,5 +147,34 @@
     "common": {
         "loading": "Loading...",
         "currency": "UAH"
+    },
+    "auth": {
+        "login": "Login",
+        "register": "Register",
+        "noAccount": "Don't have an account?",
+        "haveAccount": "Already have an account?",
+        "form": {
+            "email": "Email",
+            "password": "Password"
+        },
+        "success": {
+            "login": "Login successful!",
+            "registration": "Registration successful!",
+            "registrationWithVerification": "Registration successful! Please check your email for verification."
+        },
+        "errors": {
+            "requiredFields": "Please fill in all fields",
+            "passwordLength": "Password must be at least 6 characters",
+            "emailInUse": "This email is already in use",
+            "invalidEmail": "Please enter a valid email address",
+            "weakPassword": "Password should be at least 6 characters",
+            "userNotFound": "User not found",
+            "wrongPassword": "Incorrect password",
+            "emailNotVerified": "Email not verified. We've sent a new verification link to your email.",
+            "tooManyAttempts": "Too many attempts. Please try again later.",
+            "networkError": "Network error. Please check your connection.",
+            "general": "An error occurred. Please try again."
+        }
     }
+
 }

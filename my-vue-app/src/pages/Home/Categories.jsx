@@ -15,17 +15,17 @@ const Categories = () => {
     const { t } = useTranslation();
 
     const categories = [
-        { id: 'phones', name: t('categories.phones'), image: Samsung_S23 },
-        { id: 'tablets', name: t('categories.tablets'), image: iPad_Air },
-        { id: 'washingMachines', name: t('categories.washingMachines'), image: Bosch_10 },
-        { id: 'ovens', name: t('categories.ovens'), image: Bosch_HBJ },
-        { id: 'laptops', name: t('categories.laptops'), image: Acer_Extensa_15 },
-        { id: 'tvs', name: t('categories.tvs'), image: Sony_65_LED }
+        { id: 'phones', name: t('categoriess.phones'), image: Samsung_S23 },
+        { id: 'tablets', name: t('categoriess.tablets'), image: iPad_Air },
+        { id: 'washingMachines', name: t('categoriess.washingMachines'), image: Bosch_10 },
+        { id: 'ovens', name: t('categoriess.ovens'), image: Bosch_HBJ },
+        { id: 'laptops', name: t('categoriess.laptops'), image: Acer_Extensa_15 },
+        { id: 'tvs', name: t('categoriess.tvs'), image: Sony_65_LED }
     ];
 
     return (
         <div className="categories-page">
-            <h1 className="categories-title">{t('categories.title')}</h1>
+            <h1 className="categories-title">{t('categoriess.title')}</h1>
             <div className="categories-grid">
                 {categories.map(category => (
                     <div
@@ -34,7 +34,7 @@ const Categories = () => {
                         onClick={() => navigate(`/category/${category.id}`)}
                         role="button"
                         tabIndex={0}
-                        aria-label={`${t('categories.view')} ${category.name}`}
+                        aria-label={`${t('categoriess.view')} ${category.name}`}
                         onKeyPress={(e) => e.key === 'Enter' && navigate(`/category/${category.id}`)}
                     >
                         <img

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import categoryData from '../../components/ArrayOfCategories';
+import categoryData from '../../data/ArrayOfCategories';
 import PriceComparisonModal from '../../components/PriceComparisonModal';
 import '../../style/CategoryPage.css';
 import STORE_LOGOS from '../../components/STORE_LOGOS';

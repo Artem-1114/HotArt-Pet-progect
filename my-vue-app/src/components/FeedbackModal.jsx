@@ -12,7 +12,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Validation
+        // Валідація форми
         if (!name || !email || !message) {
             setStatus(t('feedback.validation.requiredFields'));
             return;
