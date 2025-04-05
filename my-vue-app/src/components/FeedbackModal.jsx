@@ -1,61 +1,89 @@
-import React, { useState } from "react";
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import "../style/FeedbackModal.css";
 
 const FeedbackModal = ({ isOpen, onClose }) => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [message, setMessage] = useState("");
-    const [status, setStatus] = useState(null);
     const { t } = useTranslation();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const validationSchema = Yup.object().shape({
+        name: Yup.string().required(t('feedback.validation.requiredFields')),
+        email: Yup.string()
+            .email(t('feedback.validation.invalidEmail'))
+            .required(t('feedback.validation.requiredFields')),
+        message: Yup.string().required(t('feedback.validation.requiredFields'))
+    });
 
-        // Валідація форми
-        if (!name || !email || !message) {
-            setStatus(t('feedback.validation.requiredFields'));
-            return;
-        }
-
-        if (!/\S+@\S+\.\S+/.test(email)) {
-            setStatus(t('feedback.validation.invalidEmail'));
-            return;
-        }
-
-        setTimeout(() => {
+    const formik = useFormik({
+        initialValues: {
+            name: '',
+            email: '',
+            message: ''
+        },
+        validationSchema,
+        onSubmit: (values, { setStatus, resetForm }) => {
             setStatus(t('feedback.successMessage'));
-            setName("");
-            setEmail("");
-            setMessage("");
-        }, 1500);
-    };
+            setTimeout(() => {
+                resetForm();
+                setStatus(null);
+            }, 3000);
+        }
+    });
 
     return (
         <div className={`modal-overlay ${isOpen ? "active" : ""}`}>
             <div className="modal">
                 <h2>{t('feedback.title')}</h2>
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        placeholder={t('feedback.form.name')}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <input
-                        type="email"
-                        placeholder={t('feedback.form.email')}
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <textarea
-                        placeholder={t('feedback.form.message')}
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                    />
-                    <button type="submit">{t('feedback.form.submit')}</button>
+                <form onSubmit={formik.handleSubmit}>
+                    <div className="form-group">
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder={t('feedback.form.name')}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.name}
+                        />
+                        {formik.touched.name && formik.errors.name && (
+                            <p className="error-message">{formik.errors.name}</p>
+                        )}
+                    </div>
+
+                    <div className="form-group">
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder={t('feedback.form.email')}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.email}
+                        />
+                        {formik.touched.email && formik.errors.email && (
+                            <p className="error-message">{formik.errors.email}</p>
+                        )}
+                    </div>
+
+                    <div className="form-group">
+                        <textarea
+                            name="message"
+                            placeholder={t('feedback.form.message')}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.message}
+                        />
+                        {formik.touched.message && formik.errors.message && (
+                            <p className="error-message">{formik.errors.message}</p>
+                        )}
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={!formik.isValid || formik.isSubmitting}
+                    >
+                        {t('feedback.form.submit')}
+                    </button>
                 </form>
-                {status && <p className="modal-status">{status}</p>}
+                {formik.status && <p className="modal-status">{formik.status}</p>}
                 <button
                     className="modal-close"
                     onClick={onClose}

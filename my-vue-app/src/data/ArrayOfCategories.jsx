@@ -22,20 +22,20 @@ import LG_15 from "../assets/washingMachines/LG_15.jpg"
 import Bosh_20 from "../assets/washingMachines/Bocsh_20.jpg"
 
 import Bosch_HBJ558YB3Q from "../assets/ovens/Bosch_HBJ.jpg"
-import WHIRLPOOL_AKZ9_6240_NB from "../assets/ovens/WHIRLPOOL_AKZ9_6240_NB.jpg"
-import ELECTROLUX_EOF5H40BX from "../assets/ovens/ELECTROLUX_EOF5H40BX.jpg"
+import Whirppool_Akz9_6240_Nb from "../assets/ovens/Whirppool_Akz9_6240_Nb.jpg"
+import Electolux_E0f5h40bx from "../assets/ovens/Electolux_E0f5h40bx.jpg"
 import Gorenje_G400_BOP6737E02BK from "../assets/ovens/Gorenje_G400_BOP6737E02BK.jpg"
 import Hansa_BOES68121 from "../assets/ovens/Hansa_BOES68121.jpg"
-import WHIRLPOOL_OMSK58CU1SB from "../assets/ovens/WHIRLPOOL_OMSK58CU1SB.jpg"
-import ELECTROLUX_EOF5C50BZ from "../assets/ovens/ELECTROLUX_EOF5C50BZ.jpg"
+import Whirppool_OMSK58CU1SB from "../assets/ovens/Whirppool_OMSK58CU1SB.jpg"
+import Electrolux_E0f5c50bz from "../assets/ovens/Electrolux_E0f5c50bz.jpg"
 
 import Acer_Extensa_15 from "../assets/laptops/Acer_Extensa_15.jpg"
-import ASUS_Vivobook_15 from "../assets/laptops/ASUS_Vivobook_15.jpg"
+import Asus_Vivobook_15 from "../assets/laptops/Asus_Vivobook_15.jpg"
 import Dell_Vostro_3530 from "../assets/laptops/Dell_Vostro_3530.jpg"
 import Lenovo_V14 from "../assets/laptops/Lenovo_V14.jpg"
 import Acer_Extensa from "../assets/laptops/Acer_Extensa.jpg"
 import Lenovo_IdeaPad_3 from "../assets/laptops/Lenovo_IdeaPad_3.jpg"
-import ASUS_TUF from "../assets/laptops/ASUS_TUF.jpg"
+import Asus_Tuf from "../assets/laptops/Asus_Tuf.jpg"
 
 import Sony_65_LED from "../assets/TV/Sony_65_LED.jpg"
 import Samsung_UE32T4500A from "../assets/TV/Samsung_UE32T4500A.jpg"
@@ -262,7 +262,7 @@ const categoryData = {
             id: 2,
             name: 'WHIRLPOOL AKZ9 6240 NB',
             brand: 'WHIRLPOOL',
-            image: WHIRLPOOL_AKZ9_6240_NB,
+            image: Whirppool_Akz9_6240_Nb,
             variants: [
                 { store: 'Rozetka', price: 15999, url: 'https://rozetka.com.ua/whirlpool-akz9-6240-nb' },
                 { store: 'Comfy', price: 16999, url: 'https://comfy.ua/whirlpool-akz9-6240-nb' }
@@ -272,7 +272,7 @@ const categoryData = {
             id: 3,
             name: 'ELECTROLUX EOF5H40BX',
             brand: 'ELECTROLUX',
-            image: ELECTROLUX_EOF5H40BX,
+            image: Electolux_E0f5h40bx,
             variants: [
                 { store: 'Rozetka', price: 10999, url: 'https://rozetka.com.ua/electrolux-eof5h40bx' }
             ]
@@ -300,7 +300,7 @@ const categoryData = {
             id: 6,
             name: 'WHIRLPOOL OMSK58CU1SB',
             brand: 'WHIRLPOOL',
-            image: WHIRLPOOL_OMSK58CU1SB,
+            image: Whirppool_OMSK58CU1SB,
             variants: [
                 { store: 'Rozetka', price: 15555, url: 'https://rozetka.com.ua/whirlpool-omsk58cu1sb' },
                 { store: 'Comfy', price: 14999, url: 'https://comfy.ua/whirlpool-omsk58cu1sb' }
@@ -310,7 +310,7 @@ const categoryData = {
             id: 7,
             name: 'ELECTROLUX EOF5C50BZ',
             brand: 'ELECTROLUX',
-            image: ELECTROLUX_EOF5C50BZ,
+            image: Electrolux_E0f5c50bz,
             variants: [
                 { store: 'Rozetka', price: 13999, url: 'https://rozetka.com.ua/electrolux-eof5c50bz' },
                 { store: 'Foxtrot', price: 12999, url: 'https://foxtrot.com.ua/electrolux-eof5c50bz' }
@@ -331,7 +331,7 @@ const categoryData = {
             id: 2,
             name: 'ASUS Vivobook 15 X1500KA-EJ276 (90NB0VI5-M00E10)',
             brand: 'ASUS',
-            image: ASUS_Vivobook_15,
+            image: Asus_Vivobook_15,
             variants: [
                 { store: 'Rozetka', price: 16499, url: 'https://rozetka.com.ua/asus-vivobook-15-x1500ka-ej276' },
                 { store: 'Comfy', price: 16999, url: 'https://comfy.ua/asus-vivobook-15-x1500ka-ej276' }
@@ -380,7 +380,7 @@ const categoryData = {
             id: 7,
             name: 'ASUS TUF Gaming F17 FX707ZC4-HX028 (90NR0GX2)',
             brand: 'ASUS',
-            image: ASUS_TUF,
+            image: Asus_Tuf,
             variants: [
                 { store: 'Rozetka', price: 37999, url: 'https://rozetka.com.ua/asus-tuf-gaming-f17-fx707zc4-hx028' },
                 { store: 'Allo', price: 36999, url: 'https://allo.ua/asus-tuf-gaming-f17-fx707zc4-hx028' }

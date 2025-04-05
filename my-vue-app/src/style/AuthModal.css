@@ -190,6 +190,7 @@
     font-size: 14px;
 }
 
+
 @keyframes authModalFadeIn {
     from {
         opacity: 0;
