@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
-import { FiX } from "react-icons/fi";
+import { useState, useEffect } from 'react'; 
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { FiX } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import {
     createUserWithEmailAndPassword,
@@ -12,13 +14,9 @@ import { useAuth } from "./AuthContext";
 import "../style/AuthModal.css";
 
 const AuthModal = ({ isOpen, onClose }) => {
-    const [isLogin, setIsLogin] = useState(true);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [isLogin, setIsLogin] = useState(true); 
     const [isMounted, setIsMounted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [successMessage, setSuccessMessage] = useState("");
     const { t } = useTranslation();
     const { setCurrentUser } = useAuth();
 
@@ -36,65 +34,59 @@ const AuthModal = ({ isOpen, onClose }) => {
         };
     }, [isOpen]);
 
-    const resetForm = () => {
-        setEmail("");
-        setPassword("");
-        setError("");
-        setSuccessMessage("");
-    };
+    // Validation schema
+    const validationSchema = Yup.object().shape({
+        email: Yup.string()
+            .email(t('auth.errors.invalidEmail'))
+            .required(t('auth.errors.requiredFields')),
+        password: Yup.string()
+            .min(6, t('auth.errors.passwordLength'))
+            .required(t('auth.errors.requiredFields'))
+    });
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError("");
-        setSuccessMessage("");
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: ''
+        },
+        validationSchema,
+        onSubmit: async (values, { setErrors, resetForm }) => {
+            setIsLoading(true);
+            try {
+                if (isLogin) {
+                    // Login logic
+                    const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
 
-        // Валідація форми
-        if (!email || !password) {
-            setError(t('auth.errors.requiredFields'));
-            return;
-        }
+                    if (!userCredential.user.emailVerified) {
+                        await sendEmailVerification(userCredential.user);
+                        setErrors({ email: t('auth.errors.emailNotVerified') });
+                        return;
+                    }
 
-        if (!isLogin && password.length < 6) {
-            setError(t('auth.errors.passwordLength'));
-            return;
-        }
-
-        setIsLoading(true);
-
-        try {
-            if (isLogin) {
-                // Вхід
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-                if (!userCredential.user.emailVerified) {
+                    setCurrentUser(userCredential.user);
+                    formik.setStatus(t('auth.success.login'));
+                } else {
+                    // Registration logic
+                    const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
                     await sendEmailVerification(userCredential.user);
-                    setError(t('auth.errors.emailNotVerified'));
-                    return;
+                    setCurrentUser(userCredential.user);
+                    formik.setStatus(t('auth.success.registrationWithVerification'));
                 }
 
-                setCurrentUser(userCredential.user);
-                setSuccessMessage(t('auth.success.login'));
-            } else {
-                // Реєстрація
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await sendEmailVerification(userCredential.user);
-                setCurrentUser(userCredential.user);
-                setSuccessMessage(t('auth.success.registrationWithVerification'));
+                setTimeout(() => {
+                    onClose();
+                    resetForm();
+                }, 2000);
+            } catch (error) {
+                console.error("Authentication error:", error);
+                handleAuthError(error, setErrors);
+            } finally {
+                setIsLoading(false);
             }
-
-            setTimeout(() => {
-                onClose();
-                resetForm();
-            }, 2000);
-        } catch (error) {
-            console.error("Authentication error:", error);
-            handleAuthError(error);
-        } finally {
-            setIsLoading(false);
         }
-    };
+    });
 
-    const handleAuthError = (error) => {
+    const handleAuthError = (error, setErrors) => {
         let errorMessage = t('auth.errors.general');
 
         switch (error.code) {
@@ -125,7 +117,12 @@ const AuthModal = ({ isOpen, onClose }) => {
                 }
         }
 
-        setError(errorMessage);
+        setErrors({ email: errorMessage });
+    };
+
+    const resetForm = () => {
+        formik.resetForm();
+        formik.setStatus('');
     };
 
     if (!isMounted) return null;
@@ -139,32 +136,43 @@ const AuthModal = ({ isOpen, onClose }) => {
 
                 <h2>{isLogin ? t('auth.login') : t('auth.register')}</h2>
 
-                <form onSubmit={handleSubmit} noValidate>
-                    <input
-                        type="email"
-                        placeholder={t('auth.form.email')}
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        disabled={isLoading}
-                        required
-                    />
-                    <input
-                        type="password"
-                        placeholder={t('auth.form.password')}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        disabled={isLoading}
-                        minLength={6}
-                        required
-                    />
+                <form onSubmit={formik.handleSubmit} noValidate>
+                    <div className="form-group">
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder={t('auth.form.email')}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.email}
+                            disabled={isLoading}
+                        />
+                        {formik.touched.email && formik.errors.email && (
+                            <p className="error-message">{formik.errors.email}</p>
+                        )}
+                    </div>
 
-                    {error && <p className="error-message">{error}</p>}
-                    {successMessage && <p className="success-message">{successMessage}</p>}
+                    <div className="form-group">
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder={t('auth.form.password')}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.password}
+                            disabled={isLoading}
+                        />
+                        {formik.touched.password && formik.errors.password && (
+                            <p className="error-message">{formik.errors.password}</p>
+                        )}
+                    </div>
+
+                    {formik.status && <p className="success-message">{formik.status}</p>}
 
                     <button
                         type="submit"
                         className="auth-btn"
-                        disabled={isLoading}
+                        disabled={isLoading || !formik.isValid}
                     >
                         {isLoading ? (
                             <span className="spinner"></span>
