@@ -125,7 +125,9 @@
         "fromPrice": "From",
         "noPrice": "Price not specified",
         "compare": "Compare",
-        "noProducts": "No products match your criteria"
+        "noProducts": "No products match your criteria",
+        "hideReviews": "Hide reviews",
+        "showReviews": "Show reviews"
     },
     "filters": {
         "brands": "Filter by brands",

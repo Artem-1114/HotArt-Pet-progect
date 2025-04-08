@@ -1,0 +1,87 @@
+.comments-section {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.comment-form {
+    margin-bottom: 20px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 80px;
+    margin-bottom: 10px;
+}
+
+.comment-form button {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.comment-form button:hover {
+    background-color: #e55c00;
+}
+
+.login-prompt {
+    color: #666;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.comments-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.comment {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.comment:last-child {
+    border-bottom: none;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.comment-author {
+    font-weight: bold;
+}
+
+.comment-date {
+    color: #888;
+}
+
+.comment-text {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.toggle-comments-btn {
+    background: none;
+    border: none;
+    color: #ff6600;
+    cursor: pointer;
+    padding: 5px 0;
+    margin: 10px 0;
+    text-decoration: underline;
+}
+
+.product-comments {
+    margin-top: 15px;
+}

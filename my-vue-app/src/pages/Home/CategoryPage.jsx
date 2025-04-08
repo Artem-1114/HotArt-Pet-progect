@@ -1,11 +1,15 @@
-
 import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';  // Це єдиний імпорт useTranslation
 import categoryData from '../../data/ArrayOfCategories';
 import PriceComparisonModal from '../../components/PriceComparisonModal';
 import '../../style/CategoryPage.css';
 import STORE_LOGOS from '../../components/STORE_LOGOS';
+import { useAuth } from '../../components/AuthContext';
+import { db } from '../../firebase';
+import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import Rating from '../../components/Rating';
+import CommentsSection from '../../components/CommentsSection';
 
 const PRODUCTS_PER_PAGE = 8;
 
@@ -136,7 +140,66 @@ const StoreLogos = memo(({ variants }) => {
 });
 
 const ProductCard = memo(({ product, onCompare }) => {
+    const [showComments, setShowComments] = useState(false);
+    const [averageRating, setAverageRating] = useState(0);
+    const [userRating, setUserRating] = useState(0);
+    const { currentUser } = useAuth();
     const { t } = useTranslation();
+
+    useEffect(() => {
+        const fetchRatings = async () => {
+            const productRef = doc(db, 'products', product.id.toString());
+            const productSnap = await getDoc(productRef);
+
+            if (productSnap.exists()) {
+                const data = productSnap.data();
+                setAverageRating(data.averageRating || 0);
+
+                if (currentUser) {
+                    const userRatingRef = doc(db, 'ratings', `${product.id}_${currentUser.uid}`);
+                    const userRatingSnap = await getDoc(userRatingRef);
+                    if (userRatingSnap.exists()) {
+                        setUserRating(userRatingSnap.data().rating);
+                    }
+                }
+            }
+        };
+
+        fetchRatings();
+    }, [product.id, currentUser]);
+
+    const handleRate = async (productId, rating) => {
+        if (!currentUser) return;
+
+        try {
+            const userRatingRef = doc(db, 'ratings', `${productId}_${currentUser.uid}`);
+            await setDoc(userRatingRef, {
+                productId,
+                userId: currentUser.uid,
+                rating
+            });
+
+            const ratingsQuery = query(collection(db, 'ratings'), where('productId', '==', productId));
+            const querySnapshot = await getDocs(ratingsQuery);
+
+            let total = 0;
+            let count = 0;
+            querySnapshot.forEach((doc) => {
+                total += doc.data().rating;
+                count++;
+            });
+
+            const newAverage = count > 0 ? total / count : 0;
+            setAverageRating(newAverage);
+
+            const productRef = doc(db, 'products', productId.toString());
+            await setDoc(productRef, { averageRating: newAverage }, { merge: true });
+
+            setUserRating(rating);
+        } catch (error) {
+            console.error('Error updating rating:', error);
+        }
+    };
 
     const getMinPrice = useCallback((product) => {
         if (!product.variants || product.variants.length === 0) return Infinity;
@@ -159,6 +222,16 @@ const ProductCard = memo(({ product, onCompare }) => {
             <div className="product-card__info">
                 <h3 className="product-card__name">{product.name}</h3>
                 <p className="product-card__brand">{product.brand}</p>
+
+                <div className="product-rating">
+                    <Rating
+                        productId={product.id}
+                        initialRating={userRating}
+                        onRate={handleRate}
+                    />
+                    <span className="average-rating">({averageRating.toFixed(1)})</span>
+                </div>
+
                 <p className="product-card__price">
                     {product.variants && product.variants.length > 0
                         ? `${t('product.fromPrice')} ${getMinPrice(product).toLocaleString()} ${t('common.currency')}`
@@ -176,6 +249,19 @@ const ProductCard = memo(({ product, onCompare }) => {
                     <span className="compare-icon">↔</span>
                     {t('product.compare')} ({product.variants?.length || 0})
                 </button>
+
+                <button
+                    className="toggle-comments-btn"
+                    onClick={() => setShowComments(!showComments)}
+                >
+                    {showComments ? t('product.hideReviews') : t('product.showReviews')}
+                </button>
+
+                {showComments && (
+                    <div className="product-comments">
+                        <CommentsSection productId={product.id} />
+                    </div>
+                )}
             </div>
         </div>
     );

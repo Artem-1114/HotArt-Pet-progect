@@ -1,0 +1,29 @@
+.rating {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.star {
+    font-size: 24px;
+    color: #ccc;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 2px;
+    transition: color 0.2s;
+}
+
+.star.filled {
+    color: #ffc107;
+}
+
+.star:disabled {
+    cursor: not-allowed;
+}
+
+.average-rating {
+    margin-left: 8px;
+    font-size: 14px;
+    color: #666;
+}

@@ -1,7 +1,11 @@
-
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import PriceComparisonModal from './PriceComparisonModal';
+import { useAuth } from './AuthContext';
+import { db } from '../firebase';
+import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import Rating from './Rating';
+import CommentsSection from './CommentsSection';
 
 import rozetkaLogo from '../assets/STORE_LOGOS/rozetka-logo.png';
 import comfyLogo from '../assets/STORE_LOGOS/comfy-logo.png';
@@ -14,6 +18,7 @@ import s23UltraImage from "../assets/Actions/FeaturedSection_S23_Ultra.jpg";
 import xiaomi13ProImage from "../assets/Actions/FeaturedSection_Xiami_13_Pro.jpg";
 
 import '../style/FeaturedSection.css';
+// import '../style/ProductCard.css';
 
 const MOCK_PRODUCTS = [
     {
@@ -71,6 +76,69 @@ const MOCK_PRODUCTS = [
 ];
 
 const ProductCard = React.memo(({ product, onCompareClick, currencyLabel }) => {
+    const [showComments, setShowComments] = useState(false);
+    const [averageRating, setAverageRating] = useState(0);
+    const [userRating, setUserRating] = useState(0);
+    const { currentUser } = useAuth();
+
+    useEffect(() => {
+        const fetchRatings = async () => {
+            const productRef = doc(db, 'products', product.id.toString());
+            const productSnap = await getDoc(productRef);
+
+            if (productSnap.exists()) {
+                const data = productSnap.data();
+                setAverageRating(data.averageRating || 0);
+
+                if (currentUser) {
+                    const userRatingRef = doc(db, 'ratings', `${product.id}_${currentUser.uid}`);
+                    const userRatingSnap = await getDoc(userRatingRef);
+                    if (userRatingSnap.exists()) {
+                        setUserRating(userRatingSnap.data().rating);
+                    }
+                }
+            }
+        };
+
+        fetchRatings();
+    }, [product.id, currentUser]);
+
+    const handleRate = async (productId, rating) => {
+        if (!currentUser) return;
+
+        try {
+            // Оновлення рейтингу користувача
+            const userRatingRef = doc(db, 'ratings', `${productId}_${currentUser.uid}`);
+            await setDoc(userRatingRef, {
+                productId,
+                userId: currentUser.uid,
+                rating
+            });
+
+            // Перерахунок середнього рейтингу
+            const ratingsQuery = query(collection(db, 'ratings'), where('productId', '==', productId));
+            const querySnapshot = await getDocs(ratingsQuery);
+
+            let total = 0;
+            let count = 0;
+            querySnapshot.forEach((doc) => {
+                total += doc.data().rating;
+                count++;
+            });
+
+            const newAverage = count > 0 ? total / count : 0;
+            setAverageRating(newAverage);
+
+            // Оновлення середнього рейтингу в продукті
+            const productRef = doc(db, 'products', productId.toString());
+            await setDoc(productRef, { averageRating: newAverage }, { merge: true });
+
+            setUserRating(rating);
+        } catch (error) {
+            console.error('Error updating rating:', error);
+        }
+    };
+
     return (
         <div className="product-card">
             <div className="product-image-container">
@@ -84,12 +152,23 @@ const ProductCard = React.memo(({ product, onCompareClick, currencyLabel }) => {
             </div>
             <div className="product-info">
                 <h3>{product.name}</h3>
+
+                <div className="product-rating">
+                    <Rating
+                        productId={product.id}
+                        initialRating={userRating}
+                        onRate={handleRate}
+                    />
+                    <span className="average-rating">({averageRating.toFixed(1)})</span>
+                </div>
+
                 <div className="price-section">
                     <span className="price">
                         {product.price.toLocaleString()} {currencyLabel}
                     </span>
                     <span className="store-badge">{product.store}</span>
                 </div>
+
                 <button
                     className="compare-btn"
                     onClick={() => onCompareClick(product)}
@@ -99,6 +178,19 @@ const ProductCard = React.memo(({ product, onCompareClick, currencyLabel }) => {
                         <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" />
                     </svg>
                 </button>
+
+                <button
+                    className="toggle-comments-btn"
+                    onClick={() => setShowComments(!showComments)}
+                >
+                    {showComments ? 'Сховати відгуки' : 'Показати відгуки'}
+                </button>
+
+                {showComments && (
+                    <div className="product-comments">
+                        <CommentsSection productId={product.id} />
+                    </div>
+                )}
             </div>
         </div>
     );
