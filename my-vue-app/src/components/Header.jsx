@@ -10,7 +10,7 @@ import { signOut } from "firebase/auth";
 import { useState } from "react";
 
 const Header = ({ onLoginClick }) => {
-    const { currentUser } = useAuth();
+    const { currentUser, isAdmin } = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const handleLogout = async () => {
@@ -55,6 +55,15 @@ const Header = ({ onLoginClick }) => {
                             >
                                 Профіль
                             </Link>
+                            {isAdmin && (
+                                <Link
+                                    to="/admin"
+                                    className="dropdown-item"
+                                    onClick={() => setIsDropdownOpen(false)}
+                                >
+                                    Адмін панель
+                                </Link>
+                            )}
                             <button
                                 className="dropdown-item"
                                 onClick={handleLogout}
