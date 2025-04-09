@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';  // Це єдиний імпорт useTranslation
-import categoryData from '../../data/ArrayOfCategories';
+import { useTranslation } from 'react-i18next';
 import PriceComparisonModal from '../../components/PriceComparisonModal';
 import '../../style/CategoryPage.css';
 import STORE_LOGOS from '../../components/STORE_LOGOS';
 import { useAuth } from '../../components/AuthContext';
 import { db } from '../../firebase';
-import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, query, where, getDocs, updateDoc } from 'firebase/firestore';
 import Rating from '../../components/Rating';
 import CommentsSection from '../../components/CommentsSection';
+import categoryData from '../../data/ArrayOfCategories';
 
 const PRODUCTS_PER_PAGE = 8;
 
@@ -148,38 +148,42 @@ const ProductCard = memo(({ product, onCompare }) => {
 
     useEffect(() => {
         const fetchRatings = async () => {
-            const productRef = doc(db, 'products', product.id.toString());
-            const productSnap = await getDoc(productRef);
+            try {
+                const productRef = doc(db, 'products', product.id);
+                const productSnap = await getDoc(productRef);
 
-            if (productSnap.exists()) {
-                const data = productSnap.data();
-                setAverageRating(data.averageRating || 0);
+                if (productSnap.exists()) {
+                    const data = productSnap.data();
+                    setAverageRating(data.averageRating || 0);
 
-                if (currentUser) {
-                    const userRatingRef = doc(db, 'ratings', `${product.id}_${currentUser.uid}`);
-                    const userRatingSnap = await getDoc(userRatingRef);
-                    if (userRatingSnap.exists()) {
-                        setUserRating(userRatingSnap.data().rating);
+                    if (currentUser) {
+                        const userRatingRef = doc(db, 'ratings', `${product.id}_${currentUser.uid}`);
+                        const userRatingSnap = await getDoc(userRatingRef);
+                        if (userRatingSnap.exists()) {
+                            setUserRating(userRatingSnap.data().rating);
+                        }
                     }
                 }
+            } catch (error) {
+                console.error('Error fetching ratings:', error);
             }
         };
 
         fetchRatings();
     }, [product.id, currentUser]);
 
-    const handleRate = async (productId, rating) => {
+    const handleRate = async (rating) => {
         if (!currentUser) return;
 
         try {
-            const userRatingRef = doc(db, 'ratings', `${productId}_${currentUser.uid}`);
+            const userRatingRef = doc(db, 'ratings', `${product.id}_${currentUser.uid}`);
             await setDoc(userRatingRef, {
-                productId,
+                productId: product.id,
                 userId: currentUser.uid,
                 rating
             });
 
-            const ratingsQuery = query(collection(db, 'ratings'), where('productId', '==', productId));
+            const ratingsQuery = query(collection(db, 'ratings'), where('productId', '==', product.id));
             const querySnapshot = await getDocs(ratingsQuery);
 
             let total = 0;
@@ -192,8 +196,8 @@ const ProductCard = memo(({ product, onCompare }) => {
             const newAverage = count > 0 ? total / count : 0;
             setAverageRating(newAverage);
 
-            const productRef = doc(db, 'products', productId.toString());
-            await setDoc(productRef, { averageRating: newAverage }, { merge: true });
+            const productRef = doc(db, 'products', product.id);
+            await updateDoc(productRef, { averageRating: newAverage });
 
             setUserRating(rating);
         } catch (error) {
@@ -201,10 +205,10 @@ const ProductCard = memo(({ product, onCompare }) => {
         }
     };
 
-    const getMinPrice = useCallback((product) => {
+    const getMinPrice = useCallback(() => {
         if (!product.variants || product.variants.length === 0) return Infinity;
         return Math.min(...product.variants.map(v => v.price));
-    }, []);
+    }, [product.variants]);
 
     return (
         <div className="product-card">
@@ -225,7 +229,6 @@ const ProductCard = memo(({ product, onCompare }) => {
 
                 <div className="product-rating">
                     <Rating
-                        productId={product.id}
                         initialRating={userRating}
                         onRate={handleRate}
                     />
@@ -234,7 +237,7 @@ const ProductCard = memo(({ product, onCompare }) => {
 
                 <p className="product-card__price">
                     {product.variants && product.variants.length > 0
-                        ? `${t('product.fromPrice')} ${getMinPrice(product).toLocaleString()} ${t('common.currency')}`
+                        ? `${t('product.fromPrice')} ${getMinPrice().toLocaleString()} ${t('common.currency')}`
                         : t('product.noPrice')}
                 </p>
 
@@ -305,15 +308,45 @@ const CategoryPage = () => {
     }), [t]);
 
     useEffect(() => {
-        const loadProducts = () => {
+        const loadProducts = async () => {
             setLoading(true);
-            setTimeout(() => {
-                setProducts(categoryData[id] || []);
+            try {
+                // First try to get data from Firestore
+                const q = query(collection(db, 'products'), where('category', '==', id));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    // If Firestore is empty, use mock data
+                    const mockProducts = categoryData[id] || [];
+                    setProducts(mockProducts.map(product => ({
+                        ...product,
+                        id: product.id.toString(),
+                        variants: product.variants || []
+                    })));
+                } else {
+                    // If there is data in Firestore, use it
+                    const productsData = querySnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data(),
+                        variants: doc.data().variants || []
+                    }));
+                    setProducts(productsData);
+                }
+            } catch (error) {
+                console.error('Error loading products:', error);
+                // In case of error, also use mock data
+                const mockProducts = categoryData[id] || [];
+                setProducts(mockProducts.map(product => ({
+                    ...product,
+                    id: product.id.toString(),
+                    variants: product.variants || []
+                })));
+            } finally {
                 setLoading(false);
-            }, 800);
+            }
         };
+
         loadProducts();
-        // Скидаємо фільтри при зміні категорії
         setSelectedBrands([]);
         setSortBy('default');
         setCurrentPage(1);

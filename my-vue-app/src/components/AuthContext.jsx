@@ -7,10 +7,16 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setCurrentUser(user);
+            if (user && user.email === "artem.ishe1114@gmail.com") {
+                setIsAdmin(true);
+            } else {
+                setIsAdmin(false);
+            }
             setLoading(false);
         });
 
@@ -20,7 +26,8 @@ export function AuthProvider({ children }) {
     const value = {
         currentUser,
         setCurrentUser,
-        loading
+        loading,
+        isAdmin
     };
 
     return (
