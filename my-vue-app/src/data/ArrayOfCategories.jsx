@@ -45,7 +45,7 @@ import LG_55 from "../assets/TV/LG_55.jpg"
 const categoryData = {
     phones: [
         {
-            id: 1,
+            id: 'phone-1',
             name: 'iPhone 15 Pro',
             brand: 'Apple',
             image: iphone_15_pro_natural_titanium_pdp_image_position,
@@ -56,7 +56,7 @@ const categoryData = {
             ]
         },
         {
-            id: 2,
+            id: 'phone-2',
             name: 'Samsung Galaxy S23',
             brand: 'Samsung',
             image: Samsung_S23,
@@ -67,7 +67,7 @@ const categoryData = {
             ]
         },
         {
-            id: 3,
+            id: 'phone-3',
             name: 'Xiaomi Mi 11',
             brand: 'Xiaomi',
             image: Xiaomi_11T,
@@ -77,7 +77,7 @@ const categoryData = {
             ]
         },
         {
-            id: 4,
+            id: 'phone-4',
             name: 'Google Pixel 8 Pro',
             brand: 'Google',
             image: Google_Pixel_8_Pro,
@@ -87,7 +87,7 @@ const categoryData = {
             ]
         },
         {
-            id: 5,
+            id: 'phone-5',
             name: 'Huawei Mate 30 Pro',
             brand: 'Huawei',
             image: Hiawei_30_Pro,
@@ -97,7 +97,7 @@ const categoryData = {
             ]
         },
         {
-            id: 6,
+            id: 'phone-6',
             name: 'OnePlus 9 Pro',
             brand: 'OnePlus',
             image: OnePlus_9_Pro,
@@ -107,7 +107,7 @@ const categoryData = {
             ]
         },
         {
-            id: 7,
+            id: 'phone-7',
             name: 'Nokia 8.1',
             brand: 'Nokia',
             image: Nokia_8,
@@ -116,7 +116,7 @@ const categoryData = {
             ]
         },
         {
-            id: 8,
+            id: 'phone-8',
             name: 'Sony Xperia Z5',
             brand: 'Sony',
             image: Sony_Z5,
@@ -126,7 +126,7 @@ const categoryData = {
             ]
         },
         {
-            id: 9,
+            id: 'phone-9',
             name: 'LG G8',
             brand: 'LG',
             image: LG_G8,
@@ -138,7 +138,7 @@ const categoryData = {
     ],
     tablets: [
         {
-            id: 1,
+            id: 'tablet-1',
             name: 'iPad Air',
             brand: 'Apple',
             image: iPan_Air,
@@ -148,7 +148,7 @@ const categoryData = {
             ]
         },
         {
-            id: 2,
+            id: 'tablet-2',
             name: 'Samsung Galaxy Tab S8',
             brand: 'Samsung',
             image: Samsung_Galaxy_Tab_S8,
@@ -158,7 +158,7 @@ const categoryData = {
             ]
         },
         {
-            id: 3,
+            id: 'tablet-3',
             name: 'Xiaomi Pad 5',
             brand: 'Xiaomi',
             image: Xiaomi_Pad_5,
@@ -168,7 +168,7 @@ const categoryData = {
             ]
         },
         {
-            id: 4,
+            id: 'tablet-4',
             name: 'Lenovo Tab Plus 8/256 WiFi Luna Grey',
             brand: 'Lenovo',
             image: Lenovo_Tab_Plus_8,
@@ -177,7 +177,7 @@ const categoryData = {
             ]
         },
         {
-            id: 5,
+            id: 'tablet-5',
             name: 'Lenovo Tab 10 4/128 WiFi Black',
             brand: 'Lenovo',
             image: Lenovo_Tab_K10,
@@ -189,7 +189,7 @@ const categoryData = {
     ],
     washingMachines: [
         {
-            id: 1,
+            id: 'wm-1',
             name: 'Bosch 10 kg',
             brand: 'Bosch',
             image: Bosh_10,
@@ -199,7 +199,7 @@ const categoryData = {
             ]
         },
         {
-            id: 2,
+            id: 'wm-2',
             name: 'LG 10 kg',
             brand: 'LG',
             image: LG_10,
@@ -209,7 +209,7 @@ const categoryData = {
             ]
         },
         {
-            id: 3,
+            id: 'wm-3',
             name: 'Miele 13 kg',
             brand: 'Miele',
             image: Miele_13,
@@ -218,7 +218,7 @@ const categoryData = {
             ]
         },
         {
-            id: 4,
+            id: 'wm-4',
             name: 'Bosch 15 kg',
             brand: 'Bosch',
             image: Bosh_15,
@@ -228,17 +228,16 @@ const categoryData = {
             ]
         },
         {
-            id: 5,
-            name: 'Miele 20 kg',
-            brand: 'Miele',
+            id: 'wm-5',
+            name: 'LG 15 kg',
+            brand: 'LG',
             image: LG_15,
             variants: [
-                { store: 'Rozetka', price: 42999, url: 'https://rozetka.com.ua/miele-20kg' },
-                { store: 'Allo', price: 43999, url: 'https://allo.ua/miele-20kg' }
+                { store: 'Rozetka', price: 37999, url: 'https://rozetka.com.ua/lg-15kg' }
             ]
         },
         {
-            id: 6,
+            id: 'wm-6',
             name: 'Bosch 20 kg',
             brand: 'Bosch',
             image: Bosh_20,
@@ -250,7 +249,7 @@ const categoryData = {
     ],
     ovens: [
         {
-            id: 1,
+            id: 'oven-1',
             name: 'Bosch HBJ558YB3Q',
             brand: 'Bosch',
             image: Bosch_HBJ558YB3Q,
@@ -259,7 +258,7 @@ const categoryData = {
             ]
         },
         {
-            id: 2,
+            id: 'oven-2',
             name: 'WHIRLPOOL AKZ9 6240 NB',
             brand: 'WHIRLPOOL',
             image: Whirppool_Akz9_6240_Nb,
@@ -269,7 +268,7 @@ const categoryData = {
             ]
         },
         {
-            id: 3,
+            id: 'oven-3',
             name: 'ELECTROLUX EOF5H40BX',
             brand: 'ELECTROLUX',
             image: Electolux_E0f5h40bx,
@@ -278,7 +277,7 @@ const categoryData = {
             ]
         },
         {
-            id: 4,
+            id: 'oven-4',
             name: 'Gorenje G400 BOP6737E02BK',
             brand: 'Gorenje',
             image: Gorenje_G400_BOP6737E02BK,
@@ -288,7 +287,7 @@ const categoryData = {
             ]
         },
         {
-            id: 5,
+            id: 'oven-5',
             name: 'Hansa BOES68121',
             brand: 'Hansa',
             image: Hansa_BOES68121,
@@ -297,7 +296,7 @@ const categoryData = {
             ]
         },
         {
-            id: 6,
+            id: 'oven-6',
             name: 'WHIRLPOOL OMSK58CU1SB',
             brand: 'WHIRLPOOL',
             image: Whirppool_OMSK58CU1SB,
@@ -307,7 +306,7 @@ const categoryData = {
             ]
         },
         {
-            id: 7,
+            id: 'oven-7',
             name: 'ELECTROLUX EOF5C50BZ',
             brand: 'ELECTROLUX',
             image: Electrolux_E0f5c50bz,
@@ -319,7 +318,7 @@ const categoryData = {
     ],
     laptops: [
         {
-            id: 1,
+            id: 'laptop-1',
             name: 'Acer Extensa 15 EX215-23-R5LT (NX.EH3EU.01D)',
             brand: 'Acer',
             image: Acer_Extensa_15,
@@ -328,7 +327,7 @@ const categoryData = {
             ]
         },
         {
-            id: 2,
+            id: 'laptop-2',
             name: 'ASUS Vivobook 15 X1500KA-EJ276 (90NB0VI5-M00E10)',
             brand: 'ASUS',
             image: Asus_Vivobook_15,
@@ -338,7 +337,7 @@ const categoryData = {
             ]
         },
         {
-            id: 3,
+            id: 'laptop-3',
             name: 'Dell Vostro 3530 Aluminium (N1804QMVNB3530UA_UBU)',
             brand: 'Dell',
             image: Dell_Vostro_3530,
@@ -348,7 +347,7 @@ const categoryData = {
             ]
         },
         {
-            id: 4,
+            id: 'laptop-4',
             name: 'Lenovo V14 G4 IRU (83A000E0RA)',
             brand: 'Lenovo',
             image: Lenovo_V14,
@@ -357,7 +356,7 @@ const categoryData = {
             ]
         },
         {
-            id: 5,
+            id: 'laptop-5',
             name: 'Acer Extensa 15 EX215-55-54PU (NX.EGYEU.031)',
             brand: 'Acer',
             image: Acer_Extensa,
@@ -367,7 +366,7 @@ const categoryData = {
             ]
         },
         {
-            id: 6,
+            id: 'laptop-6',
             name: 'Lenovo IdeaPad 3',
             brand: 'Lenovo',
             image: Lenovo_IdeaPad_3,
@@ -377,7 +376,7 @@ const categoryData = {
             ]
         },
         {
-            id: 7,
+            id: 'laptop-7',
             name: 'ASUS TUF Gaming F17 FX707ZC4-HX028 (90NR0GX2)',
             brand: 'ASUS',
             image: Asus_Tuf,
@@ -389,7 +388,7 @@ const categoryData = {
     ],
     tvs: [
         {
-            id: 1,
+            id: 'tv-1',
             name: 'Sony 65 LED',
             brand: 'Sony',
             image: Sony_65_LED,
@@ -399,7 +398,7 @@ const categoryData = {
             ]
         },
         {
-            id: 2,
+            id: 'tv-2',
             name: 'Samsung UE32T4500A (UE32T4500AUXUA)',
             brand: 'Samsung',
             image: Samsung_UE32T4500A,
@@ -409,7 +408,7 @@ const categoryData = {
             ]
         },
         {
-            id: 3,
+            id: 'tv-3',
             name: 'Xiaomi TV A Pro 32',
             brand: 'Xiaomi',
             image: xiomiTV,
@@ -418,7 +417,7 @@ const categoryData = {
             ]
         },
         {
-            id: 4,
+            id: 'tv-4',
             name: 'LG 55 OLED',
             brand: 'LG',
             image: LG_55,

@@ -14,6 +14,7 @@ const AdminPanel = () => {
     const [loading, setLoading] = useState(true);
     const [editingProduct, setEditingProduct] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
+    const [initializing, setInitializing] = useState(false);
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -36,13 +37,25 @@ const AdminPanel = () => {
         };
 
         fetchProducts();
-    }, [isAdmin, successMessage]);
+    }, [isAdmin]);
+
+    const isValidImageUrl = (url) => {
+        try {
+            new URL(url);
+            return url.match(/\.(jpeg|jpg|gif|png|webp)$/) != null;
+        } catch {
+            return false;
+        }
+    };
 
     const validationSchema = Yup.object().shape({
         name: Yup.string().required(t('admin.validation.required')),
         brand: Yup.string().required(t('admin.validation.required')),
         category: Yup.string().required(t('admin.validation.required')),
-        image: Yup.string().url(t('admin.validation.invalidUrl')).required(t('admin.validation.required')),
+        image: Yup.string()
+            .url(t('admin.validation.invalidUrl'))
+            .required(t('admin.validation.required'))
+            .test('is-image', t('admin.validation.invalidImageUrl'), value => isValidImageUrl(value)),
         variants: Yup.array().of(
             Yup.object().shape({
                 store: Yup.string().required(t('admin.validation.required')),
@@ -50,7 +63,9 @@ const AdminPanel = () => {
                     .required(t('admin.validation.required'))
                     .positive(t('admin.validation.positivePrice'))
                     .typeError(t('admin.validation.validNumber')),
-                url: Yup.string().url(t('admin.validation.invalidUrl')).required(t('admin.validation.required'))
+                url: Yup.string()
+                    .url(t('admin.validation.invalidUrl'))
+                    .required(t('admin.validation.required'))
             })
         ).min(1, t('admin.validation.minOneVariant'))
     });
@@ -66,22 +81,32 @@ const AdminPanel = () => {
         validationSchema,
         onSubmit: async (values, { resetForm }) => {
             try {
+                const variants = values.variants.map(variant => ({
+                    ...variant,
+                    price: Number(variant.price)
+                }));
+
                 const productToSave = {
-                    ...values,
-                    variants: values.variants.map(variant => ({
-                        ...variant,
-                        price: Number(variant.price)
-                    })),
-                    createdAt: new Date(),
-                    averageRating: 0
+                    name: values.name.trim(),
+                    brand: values.brand.trim(),
+                    category: values.category,
+                    image: values.image.trim(),
+                    variants,
+                    createdAt: editingProduct ? editingProduct.createdAt : new Date(),
+                    updatedAt: new Date(),
+                    averageRating: editingProduct?.averageRating || 0
                 };
 
                 if (editingProduct) {
                     await updateDoc(doc(db, 'products', editingProduct.id), productToSave);
                     setSuccessMessage(t('admin.productUpdated'));
+                    setProducts(products.map(p =>
+                        p.id === editingProduct.id ? { ...productToSave, id: editingProduct.id } : p
+                    ));
                 } else {
-                    await addDoc(collection(db, 'products'), productToSave);
+                    const docRef = await addDoc(collection(db, 'products'), productToSave);
                     setSuccessMessage(t('admin.productAdded'));
+                    setProducts([...products, { ...productToSave, id: docRef.id }]);
                 }
 
                 resetForm();
@@ -90,6 +115,7 @@ const AdminPanel = () => {
             } catch (error) {
                 console.error("Error saving product: ", error);
                 setSuccessMessage(t('admin.errorSaving'));
+                setTimeout(() => setSuccessMessage(''), 5000);
             }
         }
     });
@@ -110,8 +136,15 @@ const AdminPanel = () => {
     const editProduct = (product) => {
         setEditingProduct(product);
         formik.setValues({
-            ...product,
-            variants: product.variants || []
+            name: product.name,
+            brand: product.brand,
+            category: product.category,
+            image: product.image,
+            variants: product.variants.map(v => ({
+                store: v.store,
+                price: v.price.toString(),
+                url: v.url
+            }))
         });
     };
 
@@ -124,42 +157,102 @@ const AdminPanel = () => {
                 setTimeout(() => setSuccessMessage(''), 3000);
             } catch (error) {
                 console.error("Error deleting product: ", error);
+                setSuccessMessage(t('admin.errorDeleting'));
+                setTimeout(() => setSuccessMessage(''), 3000);
             }
         }
     };
 
     const initializeProducts = async () => {
+        if (!window.confirm(t('admin.confirmInitialize'))) return;
+
         try {
+            setInitializing(true);
+            setSuccessMessage(t('admin.initializing'));
+
+            // Отримуємо всі існуючі продукти
+            const existingProductsSnapshot = await getDocs(collection(db, 'products'));
+            const existingProductsMap = new Map();
+            const uniqueProductsMap = new Map();
+
+            // Заповнюємо мапи існуючими продуктами
+            existingProductsSnapshot.forEach(doc => {
+                const product = doc.data();
+                const key = `${product.category}_${product.name}_${product.brand}`.toLowerCase();
+                existingProductsMap.set(doc.id, product);
+                uniqueProductsMap.set(key, { id: doc.id, ...product });
+            });
+
             const batch = [];
-            const productsRef = collection(db, 'products');
+            let addedCount = 0;
+            let updatedCount = 0;
+            let skippedCount = 0;
 
-            // Спочатку отримаємо всі існуючі продукти
-            const existingProducts = await getDocs(productsRef);
-            const existingIds = existingProducts.docs.map(doc => doc.id);
-
-            // Перебираємо всі категорії та товари
+            // Обробляємо продукти з categoryData
             for (const [category, products] of Object.entries(categoryData)) {
                 for (const product of products) {
-                    // Перевіряємо, чи продукт вже існує
-                    if (!existingIds.includes(product.id.toString())) {
-                        const productToAdd = {
-                            ...product,
-                            category,
-                            createdAt: new Date(),
-                            averageRating: 0
-                        };
-                        batch.push(addDoc(productsRef, productToAdd));
+                    const key = `${category}_${product.name}_${product.brand}`.toLowerCase();
+
+                    // Якщо продукт вже існує
+                    if (uniqueProductsMap.has(key)) {
+                        const existingProduct = uniqueProductsMap.get(key);
+
+                        // Перевіряємо чи варіанти відрізняються
+                        if (JSON.stringify(product.variants) !== JSON.stringify(existingProduct.variants)) {
+                            batch.push(updateDoc(doc(db, 'products', existingProduct.id), {
+                                variants: product.variants,
+                                updatedAt: new Date()
+                            }));
+                            updatedCount++;
+                        } else {
+                            skippedCount++;
+                        }
+                        continue;
                     }
+
+                    // Додаємо новий продукт
+                    const productToAdd = {
+                        ...product,
+                        category,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                        averageRating: 0,
+                        variants: product.variants || []
+                    };
+
+                    batch.push(addDoc(collection(db, 'products'), productToAdd));
+                    uniqueProductsMap.set(key, productToAdd);
+                    addedCount++;
                 }
             }
 
-            await Promise.all(batch);
-            setSuccessMessage(t('admin.productsInitialized'));
-            setTimeout(() => setSuccessMessage(''), 3000);
+            // Виконуємо всі операції
+            if (batch.length > 0) {
+                await Promise.all(batch);
+
+                // Оновлюємо список продуктів
+                const updatedSnapshot = await getDocs(collection(db, 'products'));
+                const updatedProducts = updatedSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                    variants: doc.data().variants || []
+                }));
+
+                setProducts(updatedProducts);
+                setSuccessMessage(t('admin.initResults', {
+                    added: addedCount,
+                    updated: updatedCount,
+                    skipped: skippedCount
+                }));
+            } else {
+                setSuccessMessage(t('admin.noNewProducts'));
+            }
         } catch (error) {
             console.error("Error initializing products: ", error);
             setSuccessMessage(t('admin.errorInitializing'));
-            setTimeout(() => setSuccessMessage(''), 3000);
+        } finally {
+            setInitializing(false);
+            setTimeout(() => setSuccessMessage(''), 5000);
         }
     };
 
@@ -186,7 +279,7 @@ const AdminPanel = () => {
             <h2>{t('admin.title')}</h2>
 
             {successMessage && (
-                <div className="success-message">
+                <div className={`success-message ${successMessage.includes('error') ? 'error' : ''}`}>
                     {successMessage}
                 </div>
             )}
@@ -194,8 +287,9 @@ const AdminPanel = () => {
             <button
                 onClick={initializeProducts}
                 className="initialize-btn"
+                disabled={initializing}
             >
-                {t('admin.initializeProducts')}
+                {initializing ? t('admin.initializing') : t('admin.initializeProducts')}
             </button>
 
             <div className="admin-form-container">

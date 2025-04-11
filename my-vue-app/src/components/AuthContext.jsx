@@ -4,6 +4,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 const AuthContext = createContext();
 
+const ADMIN_EMAILS = ['artem.ishe1114@gmail.com'];
+
 export function AuthProvider({ children }) {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -12,16 +14,16 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setCurrentUser(user);
-            if (user && user.email === "artem.ishe1114@gmail.com") {
-                setIsAdmin(true);
-            } else {
-                setIsAdmin(false);
-            }
+            setIsAdmin(checkIfAdmin(user));
             setLoading(false);
         });
 
-        return unsubscribe;
+        return () => unsubscribe();
     }, []);
+
+    const checkIfAdmin = (user) => {
+        return user?.email && ADMIN_EMAILS.includes(user.email);
+    };
 
     const value = {
         currentUser,

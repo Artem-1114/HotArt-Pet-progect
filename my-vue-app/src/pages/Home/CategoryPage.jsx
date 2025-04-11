@@ -13,6 +13,7 @@ import categoryData from '../../data/ArrayOfCategories';
 
 const PRODUCTS_PER_PAGE = 8;
 
+// Допоміжні компоненти
 const BrandFilter = memo(({ brands, selectedBrands, onToggle }) => {
     const { t } = useTranslation();
 
@@ -24,7 +25,6 @@ const BrandFilter = memo(({ brands, selectedBrands, onToggle }) => {
                     <label key={brand} className="brand-option">
                         <input
                             type="checkbox"
-                            className="brand-option__checkbox"
                             checked={selectedBrands.includes(brand)}
                             onChange={() => onToggle(brand)}
                             aria-label={`${t('filters.toggleBrand')} ${brand}`}
@@ -64,7 +64,7 @@ const Pagination = memo(({ currentPage, totalPages, onPageChange }) => {
     return (
         <div className="pagination">
             <button
-                className="pagination__btn pagination__btn--prev"
+                className="pagination__btn"
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 1}
                 aria-label={t('pagination.previous')}
@@ -76,7 +76,7 @@ const Pagination = memo(({ currentPage, totalPages, onPageChange }) => {
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                     <button
                         key={page}
-                        className={`pagination__page-btn ${currentPage === page ? 'pagination__page-btn--active' : ''}`}
+                        className={`pagination__page-btn ${currentPage === page ? 'active' : ''}`}
                         onClick={() => onPageChange(page)}
                         aria-label={`${t('pagination.page')} ${page}`}
                     >
@@ -86,7 +86,7 @@ const Pagination = memo(({ currentPage, totalPages, onPageChange }) => {
             </div>
 
             <button
-                className="pagination__btn pagination__btn--next"
+                className="pagination__btn"
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 aria-label={t('pagination.next')}
@@ -205,7 +205,7 @@ const ProductCard = memo(({ product, onCompare }) => {
         }
     };
 
-    const getMinPrice = useCallback(() => {
+    const minPrice = useMemo(() => {
         if (!product.variants || product.variants.length === 0) return Infinity;
         return Math.min(...product.variants.map(v => v.price));
     }, [product.variants]);
@@ -237,7 +237,7 @@ const ProductCard = memo(({ product, onCompare }) => {
 
                 <p className="product-card__price">
                     {product.variants && product.variants.length > 0
-                        ? `${t('product.fromPrice')} ${getMinPrice().toLocaleString()} ${t('common.currency')}`
+                        ? `${t('product.fromPrice')} ${minPrice.toLocaleString()} ${t('common.currency')}`
                         : t('product.noPrice')}
                 </p>
 
@@ -311,36 +311,46 @@ const CategoryPage = () => {
         const loadProducts = async () => {
             setLoading(true);
             try {
-                // First try to get data from Firestore
+                // Отримуємо дані з Firebase
                 const q = query(collection(db, 'products'), where('category', '==', id));
                 const querySnapshot = await getDocs(q);
 
-                if (querySnapshot.empty) {
-                    // If Firestore is empty, use mock data
-                    const mockProducts = categoryData[id] || [];
-                    setProducts(mockProducts.map(product => ({
-                        ...product,
-                        id: product.id.toString(),
-                        variants: product.variants || []
-                    })));
-                } else {
-                    // If there is data in Firestore, use it
-                    const productsData = querySnapshot.docs.map(doc => ({
+                let firebaseProducts = [];
+                if (!querySnapshot.empty) {
+                    firebaseProducts = querySnapshot.docs.map(doc => ({
                         id: doc.id,
                         ...doc.data(),
                         variants: doc.data().variants || []
                     }));
-                    setProducts(productsData);
                 }
-            } catch (error) {
-                console.error('Error loading products:', error);
-                // In case of error, also use mock data
-                const mockProducts = categoryData[id] || [];
-                setProducts(mockProducts.map(product => ({
+
+                // Отримуємо локальні дані
+                const localProducts = categoryData[id]?.map(product => ({
                     ...product,
                     id: product.id.toString(),
                     variants: product.variants || []
-                })));
+                })) || [];
+
+                // Об'єднуємо та видаляємо дублікати
+                const mergedProducts = [...firebaseProducts, ...localProducts];
+                const uniqueProducts = mergedProducts.filter(
+                    (product, index, self) =>
+                        index === self.findIndex(p =>
+                            p.id === product.id ||
+                            (p.name === product.name && p.brand === product.brand)
+                        )
+                );
+
+                setProducts(uniqueProducts);
+            } catch (error) {
+                console.error('Error loading products:', error);
+                // Використовуємо лише локальні дані у разі помилки
+                const localProducts = categoryData[id]?.map(product => ({
+                    ...product,
+                    id: product.id.toString(),
+                    variants: product.variants || []
+                })) || [];
+                setProducts(localProducts);
             } finally {
                 setLoading(false);
             }
@@ -367,23 +377,9 @@ const CategoryPage = () => {
         const sorted = [...products];
         switch (sortBy) {
             case 'price-asc':
-                return sorted.sort((a, b) => {
-                    const priceA = getMinPrice(a);
-                    const priceB = getMinPrice(b);
-                    if (priceA === Infinity && priceB === Infinity) return 0;
-                    if (priceA === Infinity) return 1;
-                    if (priceB === Infinity) return -1;
-                    return priceA - priceB;
-                });
+                return sorted.sort((a, b) => getMinPrice(a) - getMinPrice(b));
             case 'price-desc':
-                return sorted.sort((a, b) => {
-                    const priceA = getMinPrice(a);
-                    const priceB = getMinPrice(b);
-                    if (priceA === Infinity && priceB === Infinity) return 0;
-                    if (priceA === Infinity) return 1;
-                    if (priceB === Infinity) return -1;
-                    return priceB - priceA;
-                });
+                return sorted.sort((a, b) => getMinPrice(b) - getMinPrice(a));
             case 'brand':
                 return sorted.sort((a, b) => a.brand.localeCompare(b.brand));
             default:
@@ -398,9 +394,8 @@ const CategoryPage = () => {
     }, [sortedProducts, selectedBrands]);
 
     const paginatedProducts = useMemo(() => {
-        const indexOfLastProduct = currentPage * PRODUCTS_PER_PAGE;
-        const indexOfFirstProduct = indexOfLastProduct - PRODUCTS_PER_PAGE;
-        return filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+        const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
+        return filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
     }, [filteredProducts, currentPage]);
 
     const totalPages = useMemo(() =>
@@ -435,7 +430,7 @@ const CategoryPage = () => {
     }, []);
 
     return (
-        <div className="category-page" id="category-page">
+        <div className="category-page">
             <h1 className="category-page__title">{CATEGORY_TITLES[id] || t('categories.default')}</h1>
 
             <div className="category-filters">

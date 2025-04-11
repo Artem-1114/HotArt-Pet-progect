@@ -215,8 +215,14 @@
             "invalidUrl": "Введіть коректний URL",
             "positivePrice": "Ціна повинна бути більше 0",
             "validNumber": "Введіть коректне число",
-            "minOneVariant": "Додайте хоча б один варіант"
-        }
+            "minOneVariant": "Додайте хоча б один варіант",
+            "invalidImageUrl": "Невірний URL зображення",
+            "categoryRequired": "Оберіть категорію"
+        },  
+        "errors": {
+            "permissionDenied": "У вас немає прав для збереження товару",
+            "invalidData": "Невірні дані товару",
+            "networkError": "Помилка мережі, спробуйте ще раз"
     },
     "categories": {
         "phones": "Смартфони",
@@ -226,4 +232,5 @@
         "laptops": "Ноутбуки",
         "tvs": "Телевізори"
     }
+}
 }
