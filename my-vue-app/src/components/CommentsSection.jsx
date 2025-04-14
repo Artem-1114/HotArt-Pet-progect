@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { db } from '../firebase';
-import { collection, query, where, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
 import '../style/CommentsSection.css';
 
 const CommentsSection = ({ productId }) => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
-    const { currentUser } = useAuth();
+    const { currentUser, isAdmin } = useAuth();
 
     useEffect(() => {
         if (!productId) return;
@@ -20,9 +20,13 @@ const CommentsSection = ({ productId }) => {
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const commentsData = [];
             querySnapshot.forEach((doc) => {
-                commentsData.push({ id: doc.id, ...doc.data() });
+                commentsData.push({
+                    id: doc.id,
+                    ...doc.data(),
+                    timestamp: doc.data().timestamp?.toDate()
+                });
             });
-            setComments(commentsData.sort((a, b) => b.timestamp?.toDate() - a.timestamp?.toDate()));
+            setComments(commentsData.sort((a, b) => b.timestamp - a.timestamp));
         });
 
         return () => unsubscribe();
@@ -43,6 +47,16 @@ const CommentsSection = ({ productId }) => {
             setNewComment('');
         } catch (error) {
             console.error('Error adding comment:', error);
+        }
+    };
+
+    const handleDeleteComment = async (commentId) => {
+        if (window.confirm('Ви впевнені, що хочете видалити цей коментар?')) {
+            try {
+                await deleteDoc(doc(db, 'comments', commentId));
+            } catch (error) {
+                console.error('Error deleting comment:', error);
+            }
         }
     };
 
@@ -70,8 +84,16 @@ const CommentsSection = ({ productId }) => {
                         <div className="comment-header">
                             <span className="comment-author">{comment.userEmail}</span>
                             <span className="comment-date">
-                                {comment.timestamp?.toDate().toLocaleString()}
+                                {comment.timestamp?.toLocaleString()}
                             </span>
+                            {(currentUser?.uid === comment.userId || isAdmin) && (
+                                <button
+                                    className="delete-comment"
+                                    onClick={() => handleDeleteComment(comment.id)}
+                                >
+                                    Видалити
+                                </button>
+                            )}
                         </div>
                         <p className="comment-text">{comment.text}</p>
                     </div>

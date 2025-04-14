@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import PriceComparisonModal from './PriceComparisonModal';
-import { useAuth } from './AuthContext';
-import { db } from '../firebase';
-import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
-import Rating from './Rating';
-import CommentsSection from './CommentsSection';
 
 import rozetkaLogo from '../assets/STORE_LOGOS/rozetka-logo.png';
 import comfyLogo from '../assets/STORE_LOGOS/comfy-logo.png';
@@ -18,14 +13,14 @@ import s23UltraImage from "../assets/Actions/FeaturedSection_S23_Ultra.jpg";
 import xiaomi13ProImage from "../assets/Actions/FeaturedSection_Xiami_13_Pro.jpg";
 
 import '../style/FeaturedSection.css';
-// import '../style/ProductCard.css';
 
 const MOCK_PRODUCTS = [
     {
-        id: 1,
+        id: "1",
         name: "iPhone 15 Pro",
         price: 42999,
         image: iphone15ProImage,
+        brand: "Apple",
         store: "Rozetka",
         variants: [
             { store: "Rozetka", price: 42999, url: "https://rozetka.com.ua/iphone-15-pro" },
@@ -35,10 +30,11 @@ const MOCK_PRODUCTS = [
         ]
     },
     {
-        id: 2,
+        id: "2",
         name: "Samsung Galaxy S23 Ultra",
         price: 47999,
         image: s23UltraImage,
+        brand: "Samsung",
         store: "Comfy",
         variants: [
             { store: "Rozetka", price: 46999, url: "https://rozetka.com.ua/s23-ultra" },
@@ -48,10 +44,11 @@ const MOCK_PRODUCTS = [
         ]
     },
     {
-        id: 3,
+        id: "3",
         name: "Xiaomi 13 Pro",
         price: 21999,
         image: xiaomi13ProImage,
+        brand: "Xiaomi",
         store: "Rozetka",
         variants: [
             { store: "Rozetka", price: 21999, url: "https://rozetka.com.ua/xiaomi-mi-11" },
@@ -61,10 +58,11 @@ const MOCK_PRODUCTS = [
         ]
     },
     {
-        id: 4,
+        id: "4",
         name: "Google Pixel 9 Pro",
         price: 31566,
         image: googlePixelImage,
+        brand: "Google",
         store: "Rozetka",
         variants: [
             { store: "Rozetka", price: 31566, url: "https://rozetka.com.ua/google-pixel-7" },
@@ -76,69 +74,6 @@ const MOCK_PRODUCTS = [
 ];
 
 const ProductCard = React.memo(({ product, onCompareClick, currencyLabel }) => {
-    const [showComments, setShowComments] = useState(false);
-    const [averageRating, setAverageRating] = useState(0);
-    const [userRating, setUserRating] = useState(0);
-    const { currentUser } = useAuth();
-
-    useEffect(() => {
-        const fetchRatings = async () => {
-            const productRef = doc(db, 'products', product.id.toString());
-            const productSnap = await getDoc(productRef);
-
-            if (productSnap.exists()) {
-                const data = productSnap.data();
-                setAverageRating(data.averageRating || 0);
-
-                if (currentUser) {
-                    const userRatingRef = doc(db, 'ratings', `${product.id}_${currentUser.uid}`);
-                    const userRatingSnap = await getDoc(userRatingRef);
-                    if (userRatingSnap.exists()) {
-                        setUserRating(userRatingSnap.data().rating);
-                    }
-                }
-            }
-        };
-
-        fetchRatings();
-    }, [product.id, currentUser]);
-
-    const handleRate = async (productId, rating) => {
-        if (!currentUser) return;
-
-        try {
-            // Оновлення рейтингу користувача
-            const userRatingRef = doc(db, 'ratings', `${productId}_${currentUser.uid}`);
-            await setDoc(userRatingRef, {
-                productId,
-                userId: currentUser.uid,
-                rating
-            });
-
-            // Перерахунок середнього рейтингу
-            const ratingsQuery = query(collection(db, 'ratings'), where('productId', '==', productId));
-            const querySnapshot = await getDocs(ratingsQuery);
-
-            let total = 0;
-            let count = 0;
-            querySnapshot.forEach((doc) => {
-                total += doc.data().rating;
-                count++;
-            });
-
-            const newAverage = count > 0 ? total / count : 0;
-            setAverageRating(newAverage);
-
-            // Оновлення середнього рейтингу в продукті
-            const productRef = doc(db, 'products', productId.toString());
-            await setDoc(productRef, { averageRating: newAverage }, { merge: true });
-
-            setUserRating(rating);
-        } catch (error) {
-            console.error('Error updating rating:', error);
-        }
-    };
-
     return (
         <div className="product-card">
             <div className="product-image-container">
@@ -152,15 +87,7 @@ const ProductCard = React.memo(({ product, onCompareClick, currencyLabel }) => {
             </div>
             <div className="product-info">
                 <h3>{product.name}</h3>
-
-                <div className="product-rating">
-                    <Rating
-                        productId={product.id}
-                        initialRating={userRating}
-                        onRate={handleRate}
-                    />
-                    <span className="average-rating">({averageRating.toFixed(1)})</span>
-                </div>
+                <p className="product-brand">{product.brand}</p>
 
                 <div className="price-section">
                     <span className="price">
@@ -169,28 +96,14 @@ const ProductCard = React.memo(({ product, onCompareClick, currencyLabel }) => {
                     <span className="store-badge">{product.store}</span>
                 </div>
 
-                <button
-                    className="compare-btn"
-                    onClick={() => onCompareClick(product)}
-                >
-                    <span>Порівняти ціни</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" />
-                    </svg>
-                </button>
-
-                <button
-                    className="toggle-comments-btn"
-                    onClick={() => setShowComments(!showComments)}
-                >
-                    {showComments ? 'Сховати відгуки' : 'Показати відгуки'}
-                </button>
-
-                {showComments && (
-                    <div className="product-comments">
-                        <CommentsSection productId={product.id} />
-                    </div>
-                )}
+                <div className="product-actions">
+                    <button
+                        className="compare-btn"
+                        onClick={() => onCompareClick(product)}
+                    >
+                        Порівняти ціни
+                    </button>
+                </div>
             </div>
         </div>
     );

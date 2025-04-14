@@ -10,6 +10,8 @@ import AdminPanel from "../src/components/AdminPanel";
 import { useState } from "react";
 import AuthModal from "./components/AuthModal";
 import { useAuth } from "./components/AuthContext";
+import WishlistPage from "./pages/Home/WishlistPage";
+import CartPage from "./pages/Home/CartPage";
 
 function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -26,6 +28,8 @@ function App() {
           <Route path="/categories" element={<Categories />} />
           <Route path="/category/:id" element={<CategoryPage />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/wishlist" element={<WishlistPage />} />
+          <Route path="/cart" element={<CartPage />} />
         </Routes>
       </main>
       <Footer />
