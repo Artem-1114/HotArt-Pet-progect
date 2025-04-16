@@ -68,7 +68,8 @@
     "navigation": {
         "categories": "Categories",
         "sales": "Sales",
-        "stores": "Stores"
+        "stores": "Stores",
+        "wishlist": "Wishlist"
     },
     "feedback": {
         "title": "Contact Us",
@@ -119,27 +120,32 @@
         "ovens": "Ovens",
         "laptops": "Laptops",
         "tvs": "TVs",
-        "default": "Category"
-    },
-    "product": {
-        "fromPrice": "From",
-        "noPrice": "Price not specified",
-        "compare": "Compare",
-        "noProducts": "No products match your criteria",
-        "hideReviews": "Hide reviews",
-        "showReviews": "Show reviews"
+        "default": "Products"
     },
     "filters": {
-        "brands": "Filter by brands",
-        "toggleBrand": "Filter by brand",
+        "brands": "Brands",
+        "toggleBrand": "Toggle brand filter for",
         "sort": "Sort by",
-        "sortBy": "Sort by"
+        "sortBy": "Sort products by"
     },
     "sort": {
         "default": "Default",
         "priceAsc": "Price: Low to High",
         "priceDesc": "Price: High to Low",
-        "brand": "Brand (A-Z)"
+        "brand": "Brand: A to Z",
+        "ratingDesc": "Rating: High to Low"
+    },
+    "product": {
+        "fromPrice": "From",
+        "noPrice": "Price not available",
+        "compare": "Compare",
+        "addToCart": "Add to Cart",
+        "inCart": "In Cart",
+        "addToWishlist": "Add to wishlist",
+        "removeFromWishlist": "Remove from wishlist",
+        "showReviews": "Show Reviews",
+        "hideReviews": "Hide Reviews",
+        "noProducts": "No products found"
     },
     "pagination": {
         "previous": "Previous",
@@ -211,5 +217,22 @@
             "minOneVariant": "At least one variant is required"
         }
 
+},
+"wishlist": {
+    "title": "Wishlist",
+    "empty": "Your wishlist is empty",
+    "goToCatalog": "Go to Catalog",
+    "fromPrice": "From",
+    "remove": "Remove",
+    "error": "Failed to load wishlist"
+},
+"cart": {
+    "title": "Your Shopping Cart",
+    "empty": "Your cart is empty",
+    "goToCatalog": "Go to Catalog",
+    "remove": "Remove",
+    "total": "Total",
+    "checkout": "Proceed to Checkout",
+    "orderPlaced": "Your order has been placed successfully!"
 }
 }

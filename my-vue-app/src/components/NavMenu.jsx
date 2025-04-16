@@ -9,6 +9,7 @@ const NavMenu = () => {
             <Link to="/categories">{t('navigation.categories')}</Link>
             <Link to="/sales">{t('navigation.sales')}</Link>
             <Link to="/stores">{t('navigation.stores')}</Link>
+            <Link to="/wishlist">{t('navigation.wishlist')}</Link>
         </nav>
     );
 };

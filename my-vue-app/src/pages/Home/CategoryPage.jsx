@@ -1,35 +1,35 @@
-import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, memo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import PriceComparisonModal from '../../components/PriceComparisonModal';
 import '../../style/CategoryPage.css';
 import STORE_LOGOS from '../../components/STORE_LOGOS';
 import { useAuth } from '../../components/AuthContext';
+import { useWishlist } from '../../components/WishlistContext';
 import { db } from '../../firebase';
 import { doc, getDoc, setDoc, collection, query, where, getDocs, updateDoc } from 'firebase/firestore';
-import Rating from '../../components/Rating';
 import CommentsSection from '../../components/CommentsSection';
+import Rating from '../../components/Rating';
 import categoryData from '../../data/ArrayOfCategories';
 
 const PRODUCTS_PER_PAGE = 8;
 
-// Допоміжні компоненти
-const BrandFilter = memo(({ brands, selectedBrands, onToggle }) => {
+const CategoryBrandFilter = memo(({ brands, selectedBrands, onToggle }) => {
     const { t } = useTranslation();
 
     return (
-        <div className="brand-filter">
-            <h3 className="brand-filter__title">{t('filters.brands')}:</h3>
-            <div className="brand-filter__options">
+        <div className="category-page__brand-filter">
+            <h3 className="category-page__brand-filter-title">{t('filters.brands')}:</h3>
+            <div className="category-page__brand-options">
                 {brands.map(brand => (
-                    <label key={brand} className="brand-option">
+                    <label key={brand} className="category-page__brand-option">
                         <input
                             type="checkbox"
                             checked={selectedBrands.includes(brand)}
                             onChange={() => onToggle(brand)}
                             aria-label={`${t('filters.toggleBrand')} ${brand}`}
                         />
-                        <span className="brand-option__label">{brand}</span>
+                        <span className="category-page__brand-label">{brand}</span>
                     </label>
                 ))}
             </div>
@@ -37,14 +37,14 @@ const BrandFilter = memo(({ brands, selectedBrands, onToggle }) => {
     );
 });
 
-const SortFilter = memo(({ value, onChange }) => {
+const CategorySortFilter = memo(({ value, onChange }) => {
     const { t } = useTranslation();
 
     return (
-        <div className="sort-filter">
-            <label className="sort-filter__label">{t('filters.sort')}:</label>
+        <div className="category-page__sort-filter">
+            <label className="category-page__sort-label">{t('filters.sort')}:</label>
             <select
-                className="sort-filter__select"
+                className="category-page__sort-select"
                 value={value}
                 onChange={onChange}
                 aria-label={t('filters.sortBy')}
@@ -53,18 +53,19 @@ const SortFilter = memo(({ value, onChange }) => {
                 <option value="price-asc">{t('sort.priceAsc')}</option>
                 <option value="price-desc">{t('sort.priceDesc')}</option>
                 <option value="brand">{t('sort.brand')}</option>
+                <option value="rating-desc">{t('sort.ratingDesc')}</option>
             </select>
         </div>
     );
 });
 
-const Pagination = memo(({ currentPage, totalPages, onPageChange }) => {
+const CategoryPagination = memo(({ currentPage, totalPages, onPageChange }) => {
     const { t } = useTranslation();
 
     return (
-        <div className="pagination">
+        <div className="category-page__pagination">
             <button
-                className="pagination__btn"
+                className="category-page__pagination-btn"
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 1}
                 aria-label={t('pagination.previous')}
@@ -72,11 +73,11 @@ const Pagination = memo(({ currentPage, totalPages, onPageChange }) => {
                 &larr; {t('pagination.previous')}
             </button>
 
-            <div className="pagination__pages">
+            <div className="category-page__pagination-pages">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                     <button
                         key={page}
-                        className={`pagination__page-btn ${currentPage === page ? 'active' : ''}`}
+                        className={`category-page__pagination-page-btn ${currentPage === page ? 'category-page__pagination-page-btn--active' : ''}`}
                         onClick={() => onPageChange(page)}
                         aria-label={`${t('pagination.page')} ${page}`}
                     >
@@ -86,7 +87,7 @@ const Pagination = memo(({ currentPage, totalPages, onPageChange }) => {
             </div>
 
             <button
-                className="pagination__btn"
+                className="category-page__pagination-btn"
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 aria-label={t('pagination.next')}
@@ -97,172 +98,165 @@ const Pagination = memo(({ currentPage, totalPages, onPageChange }) => {
     );
 });
 
-const LoadingIndicator = memo(() => {
+const CategoryLoadingIndicator = memo(() => {
     const { t } = useTranslation();
 
     return (
-        <div className="loading-state">
-            <div className="loading-spinner"></div>
-            <p className="loading-text">{t('common.loading')}</p>
+        <div className="category-page__loading">
+            <div className="category-page__loading-spinner"></div>
+            <p className="category-page__loading-text">{t('common.loading')}</p>
         </div>
     );
 });
 
-const EmptyState = memo(() => {
+const CategoryEmptyState = memo(() => {
     const { t } = useTranslation();
 
     return (
-        <div className="empty-state">
-            <p className="empty-state__text">{t('product.noProducts')}</p>
+        <div className="category-page__empty">
+            <p className="category-page__empty-text">{t('product.noProducts')}</p>
         </div>
     );
 });
 
-const StoreLogos = memo(({ variants }) => {
+const CategoryStoreLogos = memo(({ variants }) => {
     const { t } = useTranslation();
 
     return (
-        <div className="product-stores">
+        <div className="category-page__store-logos">
             {variants?.slice(0, 3).map((variant, i) => (
                 <img
                     key={i}
                     src={STORE_LOGOS[variant.store]}
                     alt={variant.store}
-                    className="store-logo"
+                    className="category-page__store-logo"
                     title={`${variant.store}: ${variant.price.toLocaleString()} ${t('common.currency')}`}
                 />
             ))}
             {variants?.length > 3 && (
-                <span className="more-stores">+{variants.length - 3}</span>
+                <span className="category-page__more-stores">+{variants.length - 3}</span>
             )}
         </div>
     );
 });
 
-const ProductCard = memo(({ product, onCompare }) => {
+const CategoryProductCard = memo(({ product, onCompare }) => {
     const [showComments, setShowComments] = useState(false);
-    const [averageRating, setAverageRating] = useState(0);
-    const [userRating, setUserRating] = useState(0);
     const { currentUser } = useAuth();
+    const { wishlist, cart, addToWishlist, removeFromWishlist, addToCart, removeFromCart } = useWishlist();
     const { t } = useTranslation();
 
-    useEffect(() => {
-        const fetchRatings = async () => {
-            try {
-                const productRef = doc(db, 'products', product.id);
-                const productSnap = await getDoc(productRef);
+    const isInWishlist = useMemo(() => wishlist.includes(product.id), [wishlist, product.id]);
+    const isInCart = useMemo(() => cart.includes(product.id), [cart, product.id]);
 
-                if (productSnap.exists()) {
-                    const data = productSnap.data();
-                    setAverageRating(data.averageRating || 0);
-
-                    if (currentUser) {
-                        const userRatingRef = doc(db, 'ratings', `${product.id}_${currentUser.uid}`);
-                        const userRatingSnap = await getDoc(userRatingRef);
-                        if (userRatingSnap.exists()) {
-                            setUserRating(userRatingSnap.data().rating);
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching ratings:', error);
-            }
-        };
-
-        fetchRatings();
-    }, [product.id, currentUser]);
-
-    const handleRate = async (rating) => {
-        if (!currentUser) return;
-
-        try {
-            const userRatingRef = doc(db, 'ratings', `${product.id}_${currentUser.uid}`);
-            await setDoc(userRatingRef, {
-                productId: product.id,
-                userId: currentUser.uid,
-                rating
-            });
-
-            const ratingsQuery = query(collection(db, 'ratings'), where('productId', '==', product.id));
-            const querySnapshot = await getDocs(ratingsQuery);
-
-            let total = 0;
-            let count = 0;
-            querySnapshot.forEach((doc) => {
-                total += doc.data().rating;
-                count++;
-            });
-
-            const newAverage = count > 0 ? total / count : 0;
-            setAverageRating(newAverage);
-
-            const productRef = doc(db, 'products', product.id);
-            await updateDoc(productRef, { averageRating: newAverage });
-
-            setUserRating(rating);
-        } catch (error) {
-            console.error('Error updating rating:', error);
+    const handleWishlistToggle = useCallback(async () => {
+        if (isInWishlist) {
+            await removeFromWishlist(product.id);
+        } else {
+            await addToWishlist(product);
         }
-    };
+    }, [isInWishlist, product, addToWishlist, removeFromWishlist]);
+
+    const handleCartToggle = useCallback(async () => {
+        if (isInCart) {
+            await removeFromCart(product.id);
+        } else {
+            await addToCart(product);
+        }
+    }, [isInCart, product, addToCart, removeFromCart]);
 
     const minPrice = useMemo(() => {
         if (!product.variants || product.variants.length === 0) return Infinity;
         return Math.min(...product.variants.map(v => v.price));
     }, [product.variants]);
 
+    const handleCompareClick = useCallback(() => {
+        if (product.variants && product.variants.length > 0) {
+            onCompare(product);
+        }
+    }, [onCompare, product]);
+
     return (
-        <div className="product-card">
-            <div className="product-card__image-container">
+        <div className="category-page__product-card" data-testid="product-card">
+            <div className="category-page__product-image-container">
                 <img
                     src={product.image}
                     alt={product.name}
-                    className="product-card__image"
+                    className="category-page__product-image"
                     loading="lazy"
                     onError={(e) => {
                         e.target.src = 'https://via.placeholder.com/300x300?text=No+Image';
                     }}
                 />
+                <button
+                    className={`category-page__wishlist-btn ${isInWishlist ? 'category-page__wishlist-btn--active' : ''}`}
+                    onClick={handleWishlistToggle}
+                    aria-label={isInWishlist ? t('product.removeFromWishlist') : t('product.addToWishlist')}
+                    data-testid="wishlist-button"
+                >
+                    {isInWishlist ? '❤️' : '🤍'}
+                </button>
             </div>
-            <div className="product-card__info">
-                <h3 className="product-card__name">{product.name}</h3>
-                <p className="product-card__brand">{product.brand}</p>
+            <div className="category-page__product-info">
+                <h3 className="category-page__product-name">{product.name}</h3>
+                <p className="category-page__product-brand">{product.brand}</p>
 
-                <div className="product-rating">
+                <div className="category-page__product-rating" data-testid="product-rating">
                     <Rating
-                        initialRating={userRating}
-                        onRate={handleRate}
+                        productId={product.id}
+                        size="medium"
+                        interactive={true}
                     />
-                    <span className="average-rating">({averageRating.toFixed(1)})</span>
                 </div>
 
-                <p className="product-card__price">
+                <p className="category-page__product-price" data-testid="product-price">
                     {product.variants && product.variants.length > 0
                         ? `${t('product.fromPrice')} ${minPrice.toLocaleString()} ${t('common.currency')}`
                         : t('product.noPrice')}
                 </p>
 
-                <StoreLogos variants={product.variants} />
+                <CategoryStoreLogos variants={product.variants} />
+
+                <div className="category-page__product-actions">
+                    <button
+                        className="category-page__compare-btn"
+                        onClick={handleCompareClick}
+                        disabled={!product.variants || product.variants.length === 0}
+                        aria-label={`${t('product.compare')} ${product.name}`}
+                        data-testid="compare-button"
+                    >
+                        <span className="category-page__compare-icon">↔</span>
+                        {t('product.compare')} ({product.variants?.length || 0})
+                    </button>
+                    <button
+                        className={`category-page__cart-btn ${isInCart ? 'category-page__cart-btn--in-cart' : ''}`}
+                        onClick={handleCartToggle}
+                        data-testid="cart-button"
+                    >
+                        {isInCart ? t('product.inCart') : t('product.addToCart')}
+                    </button>
+                </div>
 
                 <button
-                    className="product-card__compare-btn"
-                    onClick={() => onCompare(product)}
-                    disabled={!product.variants || product.variants.length === 0}
-                    aria-label={`${t('product.compare')} ${product.name}`}
-                >
-                    <span className="compare-icon">↔</span>
-                    {t('product.compare')} ({product.variants?.length || 0})
-                </button>
-
-                <button
-                    className="toggle-comments-btn"
+                    className="category-page__toggle-comments"
                     onClick={() => setShowComments(!showComments)}
+                    aria-expanded={showComments}
+                    aria-controls={`comments-${product.id}`}
+                    data-testid="toggle-comments"
                 >
                     {showComments ? t('product.hideReviews') : t('product.showReviews')}
                 </button>
 
                 {showComments && (
-                    <div className="product-comments">
-                        <CommentsSection productId={product.id} />
+                    <div
+                        className="category-page__product-comments"
+                        id={`comments-${product.id}`}
+                        data-testid="comments-section"
+                    >
+                        <CommentsSection
+                            productId={product.id}
+                            currentUser={currentUser}
+                        />
                     </div>
                 )}
             </div>
@@ -270,19 +264,19 @@ const ProductCard = memo(({ product, onCompare }) => {
     );
 });
 
-const ProductsGrid = memo(({ products, onCompare }) => {
+const CategoryProductsGrid = memo(({ products, onCompare }) => {
     return (
-        <div className="products-grid">
+        <div className="category-page__products-grid">
             {products.length > 0 ? (
                 products.map(product => (
-                    <ProductCard
+                    <CategoryProductCard
                         key={`${product.id}-${product.brand}`}
                         product={product}
                         onCompare={onCompare}
                     />
                 ))
             ) : (
-                <EmptyState />
+                <CategoryEmptyState />
             )}
         </div>
     );
@@ -307,60 +301,62 @@ const CategoryPage = () => {
         tvs: t('categories.tvs')
     }), [t]);
 
-    useEffect(() => {
-        const loadProducts = async () => {
-            setLoading(true);
-            try {
-                // Отримуємо дані з Firebase
-                const q = query(collection(db, 'products'), where('category', '==', id));
-                const querySnapshot = await getDocs(q);
+    const loadProducts = useCallback(async () => {
+        setLoading(true);
+        try {
+            const q = query(collection(db, 'products'), where('category', '==', id));
+            const querySnapshot = await getDocs(q);
 
-                let firebaseProducts = [];
-                if (!querySnapshot.empty) {
-                    firebaseProducts = querySnapshot.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data(),
-                        variants: doc.data().variants || []
-                    }));
-                }
-
-                // Отримуємо локальні дані
-                const localProducts = categoryData[id]?.map(product => ({
-                    ...product,
-                    id: product.id.toString(),
-                    variants: product.variants || []
-                })) || [];
-
-                // Об'єднуємо та видаляємо дублікати
-                const mergedProducts = [...firebaseProducts, ...localProducts];
-                const uniqueProducts = mergedProducts.filter(
-                    (product, index, self) =>
-                        index === self.findIndex(p =>
-                            p.id === product.id ||
-                            (p.name === product.name && p.brand === product.brand)
-                        )
-                );
-
-                setProducts(uniqueProducts);
-            } catch (error) {
-                console.error('Error loading products:', error);
-                // Використовуємо лише локальні дані у разі помилки
-                const localProducts = categoryData[id]?.map(product => ({
-                    ...product,
-                    id: product.id.toString(),
-                    variants: product.variants || []
-                })) || [];
-                setProducts(localProducts);
-            } finally {
-                setLoading(false);
+            let firebaseProducts = [];
+            if (!querySnapshot.empty) {
+                firebaseProducts = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                    variants: doc.data().variants || [],
+                    isLocal: false,
+                    averageRating: doc.data().averageRating || 0
+                }));
             }
-        };
 
+            const localProducts = categoryData[id]?.map(product => ({
+                ...product,
+                id: `local-${product.id}`,
+                variants: product.variants || [],
+                isLocal: true,
+                averageRating: product.averageRating || 0
+            })) || [];
+
+            const mergedProducts = [...firebaseProducts, ...localProducts];
+            const uniqueProducts = mergedProducts.filter(
+                (product, index, self) =>
+                    index === self.findIndex(p =>
+                        p.id === product.id ||
+                        (p.name === product.name && p.brand === product.brand)
+                    )
+            );
+
+            setProducts(uniqueProducts);
+        } catch (error) {
+            console.error('Error loading products:', error);
+            const localProducts = categoryData[id]?.map(product => ({
+                ...product,
+                id: `local-${product.id}`,
+                variants: product.variants || [],
+                isLocal: true,
+                averageRating: product.averageRating || 0
+            })) || [];
+            setProducts(localProducts);
+        } finally {
+            setLoading(false);
+        }
+    }, [id]);
+
+    useEffect(() => {
         loadProducts();
         setSelectedBrands([]);
         setSortBy('default');
         setCurrentPage(1);
-    }, [id]);
+    }, [id, loadProducts]);
 
     const uniqueBrands = useMemo(() => {
         const brands = new Set();
@@ -382,6 +378,8 @@ const CategoryPage = () => {
                 return sorted.sort((a, b) => getMinPrice(b) - getMinPrice(a));
             case 'brand':
                 return sorted.sort((a, b) => a.brand.localeCompare(b.brand));
+            case 'rating-desc':
+                return sorted.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
             default:
                 return sorted;
         }
@@ -433,29 +431,29 @@ const CategoryPage = () => {
         <div className="category-page">
             <h1 className="category-page__title">{CATEGORY_TITLES[id] || t('categories.default')}</h1>
 
-            <div className="category-filters">
-                <BrandFilter
+            <div className="category-page__filters">
+                <CategoryBrandFilter
                     brands={uniqueBrands}
                     selectedBrands={selectedBrands}
                     onToggle={handleBrandToggle}
                 />
-                <SortFilter
+                <CategorySortFilter
                     value={sortBy}
                     onChange={handleSortChange}
                 />
             </div>
 
             {loading ? (
-                <LoadingIndicator />
+                <CategoryLoadingIndicator />
             ) : (
                 <>
-                    <ProductsGrid
+                    <CategoryProductsGrid
                         products={paginatedProducts}
                         onCompare={handleCompare}
                     />
 
                     {totalPages > 1 && (
-                        <Pagination
+                        <CategoryPagination
                             currentPage={currentPage}
                             totalPages={totalPages}
                             onPageChange={handlePageChange}

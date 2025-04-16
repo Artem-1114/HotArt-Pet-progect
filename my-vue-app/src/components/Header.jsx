@@ -8,9 +8,11 @@ import { useAuth } from "./AuthContext";
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 import { useState } from "react";
+import { useWishlist } from "./WishlistContext";
 
 const Header = ({ onLoginClick }) => {
     const { currentUser, isAdmin } = useAuth();
+    const { wishlist, cart } = useWishlist();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const handleLogout = async () => {
@@ -74,14 +76,18 @@ const Header = ({ onLoginClick }) => {
                     )}
                 </div>
 
-                <div className="wishlist-icon">
+                <Link to="/wishlist" className="wishlist-icon">
                     <FiHeart />
-                    <span className="badge">3</span>
-                </div>
-                <div className="cart-icon">
+                    {wishlist.length > 0 && (
+                        <span className="badge">{wishlist.length}</span>
+                    )}
+                </Link>
+                <Link to="/cart" className="cart-icon">
                     <FiShoppingCart />
-                    <span className="badge">5</span>
-                </div>
+                    {cart.length > 0 && (
+                        <span className="badge">{cart.length}</span>
+                    )}
+                </Link>
             </div>
         </header>
     );
