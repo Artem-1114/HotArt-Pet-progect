@@ -1,0 +1,236 @@
+:root {
+    --primary-color: #FF9500;
+    /* Основний оранжево-жовтий */
+    --primary-hover: #E07C00;
+    /* Темніший відтінок для hover */
+    --secondary-color: #FFC107;
+    /* Світліший жовтий */
+    --background-light: #FFF9E6;
+    /* Світлий жовтуватий фон */
+    --text-dark: #333333;
+    /* Основний текст */
+    --text-medium: #5A5A5A;
+    /* Другий рівень тексту */
+    --text-light: #757575;
+    /* Третій рівень тексту */
+    --error-color: #DC3545;
+    /* Колір помилок (залишив як було) */
+    --success-color: #28A745;
+    /* Колір успіху (залишив) */
+    --info-color: #17A2B8;
+    /* Колір інформації (залишив) */
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Тінь */
+    --border-radius: 12px;
+    /* Радіус закруглення */
+    --transition: all 0.3s ease;
+    /* Плавні переходи */
+}
+
+.profile-page {
+    padding: 2rem 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+    background: linear-gradient(to bottom, #FFF9E6, #FFEDB8);
+    min-height: 100vh;
+}
+
+.profile-content {
+    background-color: white;
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 149, 0, 0.2);
+    transition: var(--transition);
+}
+
+.profile-content:hover {
+    box-shadow: 0 6px 12px rgba(255, 149, 0, 0.15);
+}
+
+.profile-info {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px dashed var(--secondary-color);
+}
+
+.profile-info h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    position: relative;
+    display: inline-block;
+}
+
+.profile-info h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 50%;
+    height: 3px;
+    background: var(--secondary-color);
+    border-radius: 3px;
+}
+
+.profile-info p {
+    color: var(--text-medium);
+    margin: 0.75rem 0;
+    font-size: 1.05rem;
+}
+
+.profile-info p strong {
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+.profile-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(255, 149, 0, 0.3);
+}
+
+.profile-btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 149, 0, 0.4);
+}
+
+.profile-btn.edit-btn {
+    background-color: var(--success-color);
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+.profile-btn.edit-btn:hover {
+    background-color: #218838;
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+}
+
+.profile-btn.cancel-btn {
+    background-color: var(--error-color);
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+}
+
+.profile-btn.cancel-btn:hover {
+    background-color: #C82333;
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
+}
+
+.profile-btn.save-btn {
+    background-color: var(--info-color);
+    box-shadow: 0 2px 4px rgba(23, 162, 184, 0.3);
+}
+
+.profile-btn.save-btn:hover {
+    background-color: #138496;
+    box-shadow: 0 4px 8px rgba(23, 162, 184, 0.4);
+}
+
+.profile-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 1.05rem;
+}
+
+.form-group input {
+    padding: 0.75rem 1rem;
+    border: 1px solid #FFD699;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background-color: #FFF9E6;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.2);
+    background-color: white;
+}
+
+.profile-form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    justify-content: flex-end;
+}
+
+.profile-error {
+    color: var(--error-color);
+    background-color: #F8D7DA;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #F5C6CB;
+    font-weight: 500;
+}
+
+.profile-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+}
+
+.profile-loading .spinner {
+    border: 4px solid rgba(255, 149, 0, 0.1);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border-left-color: var(--primary-color);
+    animation: spin 1s linear infinite;
+    margin-bottom: 1.5rem;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Додаткові декоративні елементи */
+.profile-content::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    height: 10px;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    border-radius: 0 0 10px 10px;
+    opacity: 0.7;
+}

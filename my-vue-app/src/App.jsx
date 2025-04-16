@@ -12,6 +12,9 @@ import AuthModal from "./components/AuthModal";
 import { useAuth } from "./components/AuthContext";
 import WishlistPage from "./pages/Home/WishlistPage";
 import CartPage from "./pages/Home/CartPage";
+import Sales from "./pages/Home/Sales";
+import Profile from "./pages/Home/Profile";
+import Stores from "./pages/Home/Stores";
 
 function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -30,6 +33,9 @@ function App() {
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/sales" element={<Sales />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/stores" element={<Stores />} />
         </Routes>
       </main>
       <Footer />

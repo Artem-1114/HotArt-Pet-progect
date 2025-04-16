@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FiSearch, FiX } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../firebase'; // Припускаючи, що у вас є файл конфігурації Firebase
-import categoryData from '../data/ArrayOfCategories.jsx';
+import { db } from '../firebase';
 import '../style/SearchBar.css';
 
 const SearchBar = () => {
@@ -26,7 +25,6 @@ const SearchBar = () => {
 
         const searchProducts = async () => {
             try {
-                // Пошук в Firebase
                 const productsQuery = query(
                     collection(db, 'products'),
                     where('name', '>=', searchTerm),
@@ -34,57 +32,23 @@ const SearchBar = () => {
                 );
                 const querySnapshot = await getDocs(productsQuery);
 
-                const firebaseResults = querySnapshot.docs.map(doc => ({
+                const results = querySnapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 }));
 
-                // Пошук в локальних даних
-                const localResults = [];
-                Object.values(categoryData).forEach(category => {
-                    category.forEach(product => {
-                        if (
-                            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            product.brand.toLowerCase().includes(searchTerm.toLowerCase())
-                        ) {
-                            localResults.push(product);
-                        }
-                    });
-                });
-
-                // Об'єднання результатів з видаленням дублікатів
-                const allResults = [...firebaseResults, ...localResults];
-                const uniqueResults = allResults.filter(
-                    (product, index, self) => index === self.findIndex(p =>
-                        (p.id && p.id === product.id) ||
-                        (!p.id && p.name === product.name && p.brand === product.brand)
-                    )
-                );
-
-                setSearchResults(uniqueResults.slice(0, 8));
-                setIsSearchOpen(uniqueResults.length > 0);
+                setSearchResults(results.slice(0, 8));
+                setIsSearchOpen(results.length > 0);
             } catch (error) {
                 console.error("Search error:", error);
-                // Якщо помилка з Firebase, використовуємо лише локальні дані
-                const localResults = [];
-                Object.values(categoryData).forEach(category => {
-                    category.forEach(product => {
-                        if (
-                            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            product.brand.toLowerCase().includes(searchTerm.toLowerCase())
-                        ) {
-                            localResults.push(product);
-                        }
-                    });
-                });
-                setSearchResults(localResults.slice(0, 8));
-                setIsSearchOpen(localResults.length > 0);
+                setSearchResults([]);
+                setIsSearchOpen(false);
             }
         };
 
         const debounceTimer = setTimeout(() => {
             searchProducts();
-        }, 300); // Додано дебаунс для зменшення кількості запитів
+        }, 300);
 
         return () => clearTimeout(debounceTimer);
     }, [searchTerm]);
@@ -133,16 +97,13 @@ const SearchBar = () => {
                     </div>
                     <div className="search-results-list">
                         {searchResults.map((product) => {
-                            // Визначаємо мінімальну ціну
                             const minPrice = product.variants
                                 ? Math.min(...product.variants.map(v => v.price))
-                                : product.price
-                                    ? product.price
-                                    : 0;
+                                : 0;
 
                             return (
                                 <div
-                                    key={product.id || `${product.name}-${product.brand}`}
+                                    key={product.id}
                                     className="search-result-item"
                                 >
                                     <img

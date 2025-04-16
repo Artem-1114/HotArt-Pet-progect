@@ -7,10 +7,9 @@ import STORE_LOGOS from '../../components/STORE_LOGOS';
 import { useAuth } from '../../components/AuthContext';
 import { useWishlist } from '../../components/WishlistContext';
 import { db } from '../../firebase';
-import { doc, getDoc, setDoc, collection, query, where, getDocs, updateDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import CommentsSection from '../../components/CommentsSection';
 import Rating from '../../components/Rating';
-import categoryData from '../../data/ArrayOfCategories';
 
 const PRODUCTS_PER_PAGE = 8;
 
@@ -270,7 +269,7 @@ const CategoryProductsGrid = memo(({ products, onCompare }) => {
             {products.length > 0 ? (
                 products.map(product => (
                     <CategoryProductCard
-                        key={`${product.id}-${product.brand}`}
+                        key={product.id}
                         product={product}
                         onCompare={onCompare}
                     />
@@ -307,45 +306,17 @@ const CategoryPage = () => {
             const q = query(collection(db, 'products'), where('category', '==', id));
             const querySnapshot = await getDocs(q);
 
-            let firebaseProducts = [];
-            if (!querySnapshot.empty) {
-                firebaseProducts = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data(),
-                    variants: doc.data().variants || [],
-                    isLocal: false,
-                    averageRating: doc.data().averageRating || 0
-                }));
-            }
+            const productsData = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+                variants: doc.data().variants || [],
+                averageRating: doc.data().averageRating || 0
+            }));
 
-            const localProducts = categoryData[id]?.map(product => ({
-                ...product,
-                id: `local-${product.id}`,
-                variants: product.variants || [],
-                isLocal: true,
-                averageRating: product.averageRating || 0
-            })) || [];
-
-            const mergedProducts = [...firebaseProducts, ...localProducts];
-            const uniqueProducts = mergedProducts.filter(
-                (product, index, self) =>
-                    index === self.findIndex(p =>
-                        p.id === product.id ||
-                        (p.name === product.name && p.brand === product.brand)
-                    )
-            );
-
-            setProducts(uniqueProducts);
+            setProducts(productsData);
         } catch (error) {
             console.error('Error loading products:', error);
-            const localProducts = categoryData[id]?.map(product => ({
-                ...product,
-                id: `local-${product.id}`,
-                variants: product.variants || [],
-                isLocal: true,
-                averageRating: product.averageRating || 0
-            })) || [];
-            setProducts(localProducts);
+            setProducts([]);
         } finally {
             setLoading(false);
         }

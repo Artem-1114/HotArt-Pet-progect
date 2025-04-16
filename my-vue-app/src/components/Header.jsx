@@ -9,11 +9,13 @@ import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 import { useState } from "react";
 import { useWishlist } from "./WishlistContext";
+import { useTranslation } from 'react-i18next';
 
 const Header = ({ onLoginClick }) => {
     const { currentUser, isAdmin } = useAuth();
     const { wishlist, cart } = useWishlist();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const { t } = useTranslation();
 
     const handleLogout = async () => {
         try {
@@ -43,6 +45,7 @@ const Header = ({ onLoginClick }) => {
                     <div
                         className="user-icon"
                         onClick={!currentUser ? onLoginClick : undefined}
+                        title={currentUser ? t('userMenu.profile') : t('userMenu.login')}
                     >
                         <FiUser />
                         {currentUser && <span className="auth-badge"></span>}
@@ -55,7 +58,7 @@ const Header = ({ onLoginClick }) => {
                                 className="dropdown-item"
                                 onClick={() => setIsDropdownOpen(false)}
                             >
-                                Профіль
+                                {t('userMenu.profile')}
                             </Link>
                             {isAdmin && (
                                 <Link
@@ -63,26 +66,34 @@ const Header = ({ onLoginClick }) => {
                                     className="dropdown-item"
                                     onClick={() => setIsDropdownOpen(false)}
                                 >
-                                    Адмін панель
+                                    {t('userMenu.adminPanel')}
                                 </Link>
                             )}
                             <button
                                 className="dropdown-item"
                                 onClick={handleLogout}
                             >
-                                Вийти
+                                {t('userMenu.logout')}
                             </button>
                         </div>
                     )}
                 </div>
 
-                <Link to="/wishlist" className="wishlist-icon">
+                <Link
+                    to="/wishlist"
+                    className="wishlist-icon"
+                    title={t('userMenu.wishlist')}
+                >
                     <FiHeart />
                     {wishlist.length > 0 && (
                         <span className="badge">{wishlist.length}</span>
                     )}
                 </Link>
-                <Link to="/cart" className="cart-icon">
+                <Link
+                    to="/cart"
+                    className="cart-icon"
+                    title={t('userMenu.cart')}
+                >
                     <FiShoppingCart />
                     {cart.length > 0 && (
                         <span className="badge">{cart.length}</span>
