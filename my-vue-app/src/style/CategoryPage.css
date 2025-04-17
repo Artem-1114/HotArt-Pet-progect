@@ -230,7 +230,6 @@
     align-items: center;
     justify-content: center;
     background: #f8f9fa;
-    padding: 2rem;
 }
 
 .category-page__product-image {
@@ -247,7 +246,7 @@
 .category-page__wishlist-btn {
     position: absolute;
     top: 15px;
-    right: 66px;
+    right: 15px;
     width: 36px;
     height: 36px;
     border-radius: 50%;

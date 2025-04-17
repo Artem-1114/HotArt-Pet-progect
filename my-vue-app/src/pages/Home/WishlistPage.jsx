@@ -18,23 +18,11 @@ const WishlistPage = () => {
             try {
                 const products = await Promise.all(
                     wishlist.map(async (productId) => {
-                        if (productId.startsWith('local-')) {
-                            const localId = productId.replace('local-', '');
-                            const category = Object.keys(categoryData).find(cat =>
-                                categoryData[cat].some(p => p.id === localId)
-                            );
-                            const product = categoryData[category].find(p => p.id === localId);
-                            return {
-                                ...product,
-                                id: productId
-                            };
-                        } else {
-                            const productRef = doc(db, 'products', productId);
-                            const productSnap = await getDoc(productRef);
-                            return productSnap.exists()
-                                ? { id: productSnap.id, ...productSnap.data() }
-                                : null;
-                        }
+                        const productRef = doc(db, 'products', productId);
+                        const productSnap = await getDoc(productRef);
+                        return productSnap.exists()
+                            ? { id: productSnap.id, ...productSnap.data() }
+                            : null;
                     })
                 );
                 setWishlistProducts(products.filter(Boolean));
@@ -85,7 +73,7 @@ const WishlistPage = () => {
                     {wishlistProducts.map(product => (
                         <article key={product.id} className="wishlist-page__item">
                             <Link
-                                to={`/product/${product.id.replace('local-', '')}`}
+                                to={`/product/${product.id}`}
                                 className="wishlist-page__item-link"
                             >
                                 <img

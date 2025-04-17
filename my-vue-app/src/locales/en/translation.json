@@ -24,8 +24,11 @@
     },
     "userMenu": {
         "profile": "Profile",
+        "adminPanel": "Admin Panel",
+        "logout": "Logout",
+        "login": "Login",
         "wishlist": "Wishlist",
-        "cart": "Shopping Cart"
+        "cart": "Cart"
     },
     "slider": {
         "iphone": {
@@ -234,5 +237,45 @@
     "total": "Total",
     "checkout": "Proceed to Checkout",
     "orderPlaced": "Your order has been placed successfully!"
+},
+"sales": {
+    "title": "Sales & Discounts",
+    "specialOffer": "Special Offer!",
+    "discountText": "Get exclusive discounts on selected items",
+    "shopNow": "Shop Now",
+    "weekendDeal": "Weekend Deal",
+    "newYearSale": "New Year Sale",
+    "clearance": "Clearance",
+    "upToDiscount": "Up to {{discount}} off"
+},
+"profile": {
+    "title": "My Profile",
+    "welcome": "Welcome",
+    "name": "Name",
+    "username": "Username",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone",
+    "email": "Email",
+    "lastLogin": "Last login",
+    "notProvided": "not provided",
+    "editProfile": "Edit Profile",
+    "orderHistory": "Order History",
+    "settings": "Settings",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "fetchError": "Error loading profile",
+    "updateError": "Error updating profile",
+    "loading": "Loading..."
+},
+"stores": {
+    "title": "Our Partner Stores",
+    "introText": "We cooperate with the best stores in Ukraine to provide you with quality products at competitive prices",
+    "rozetkaDesc": "Ukraine's largest online store with a wide range of products",
+    "comfyDesc": "Leader in household appliances and electronics stores",
+    "alloDesc": "Modern technology and gadgets for your comfort",
+    "foxtrotDesc": "Innovative solutions for home and office",
+    "visitWebsite": "Visit Website"
 }
 }

@@ -1,0 +1,52 @@
+.sales-page {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.sales-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.sales-banner {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+    color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.shop-now-btn {
+    background-color: white;
+    color: #ff6b6b;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.sales-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.sale-item {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sale-item h3 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.sale-item p {
+    color: #666;
+}
