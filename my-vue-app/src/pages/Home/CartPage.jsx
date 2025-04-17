@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useWishlist } from '../../components/WishlistContext';
 import { db } from '../../firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import '../../style/CartPage.css';
 
@@ -12,6 +12,7 @@ const CartPage = () => {
     const [loading, setLoading] = useState(true);
     const [totalPrice, setTotalPrice] = useState(0);
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCartProducts = async () => {
@@ -66,8 +67,7 @@ const CartPage = () => {
     }, [cart]);
 
     const handleCheckout = () => {
-        alert(t('cart.orderPlaced'));
-        clearCart();
+        navigate('/checkout', { state: { totalPrice } });
     };
 
     if (loading) {

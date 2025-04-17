@@ -15,6 +15,7 @@ import CartPage from "./pages/Home/CartPage";
 import Sales from "./pages/Home/Sales";
 import Profile from "./pages/Home/Profile";
 import Stores from "./pages/Home/Stores";
+import OrderCheckout from "./pages/Home/OrderCheckout";
 
 function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -36,6 +37,7 @@ function App() {
           <Route path="/sales" element={<Sales />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/stores" element={<Stores />} />
+          <Route path="/checkout" element={<OrderCheckout />} />
         </Routes>
       </main>
       <Footer />
